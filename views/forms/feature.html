@@ -1,6 +1,6 @@
 <article>
   <h2><strong>[$action]</strong> <a class="em" href="[$item:permalink]">[$item:title]</a></h2>
-  <form name="uploadData" method="POST" action="[/manage/edit/feature/$item:@id]" class="editor" autocomplete="off" oninput="this.classList.add('modified')">
+  <form name="uploadData" method="POST" action="[/manage/edit/feature/$item:@id]" class="editor" autocomplete="off" oninput="this.classList.add('modified')" accept-charset="UTF-8">
     <!-- insert views/forms/partials/receipt.html -->
     <section class="help">[$item:help:overview:markdown]</section>
     <!-- insert  views/forms/fieldset/title-description.html -->
@@ -10,8 +10,10 @@
       <input type="text" name="vertex[location][CDATA]" value="[$item:location]" id="location" class="required text" />
       <label for="premier">Premier Location</label>
       <input type="text" name="vertex[premier][CDATA]" value="[$item:premier]" id="premier" class="required text" />
-      <label for="premier_date" data-help="[$item:help:premier:plain]">Premier Date</label>
-      <input type="text" name="vertex[premier][@][date]" value="[$item:premier:@date]" id="premier_date" class="required text" />
+      <label for="premier_date" data-help="[$item:help:premier:plain]">Premier / Start Time</label>
+      <input type="datetime-local" name="vertex[premier][@][date]" value="[$item:premier:@date]" id="premier_date" class="required text" />
+      <label for="premier_duration" data-help="[$item:help:duration:plain]">End time (if session event)</label>
+      <input type="datetime-local" name="vertex[premier][@][duration]" value="[$item:premier:@duration]" id="premier_duration" class="required text" placeholder="enter end time"/>
     </fieldset>
     <!--  replace upload nextSibling -->
     <!-- insert views/forms/fieldset/media/audio-image.html -->
@@ -22,13 +24,13 @@
       <label class="range container">
         <strong class="center" style="display:block;padding:0.25em;">[$title]</strong>
         <span>[$item:@from]</span>
-        <input type="range" min="0" max="100" name="[vertex[spectra][@][$item:@id]]" value="[$value]" data-index="0" />
+        <input type="range" min="0" max="100" name="[vertex[spectra][@][$key]]" value="[$value]" data-index="0" />
         <span>[$item:@to]</span>
       </label>
     </fieldset>
     <fieldset class="recommended group float-left">
       <legend class="caps-lock">Similar</legend>
-      <!-- insert views/lists/recommendation.html -->
+      <!-- insert views/lists/rec-light.html -->
     </fieldset>
     <hr style="clear:both;margin:5em 0;border-color:transparent;" />
     <!-- insert views/forms/fieldset/edge.html -->

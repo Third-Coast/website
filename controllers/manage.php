@@ -36,6 +36,8 @@ class Manage extends \bloc\controller
     $this->_redirect   = $request->redirect;
     $this->_controller = $request->controller;
     $this->_action     = $request->action;
+    // $this->_revision   = substr(exec('tail -1 /var/www/thirdcoastfestival.org/.git/logs/HEAD'), 0, 15);
+    
 		$this->timestamp   = [
       'year'  => date('Y'),
       'month' => date('m'),
@@ -44,7 +46,7 @@ class Manage extends \bloc\controller
     ];
     
 
-    $tciaf = Graph::FACTORY(Graph::ID('TCIAF'));
+    $tciaf = Graph::FACTORY(Graph::ID('A'));
 
     $this->supporters = $tciaf->supporters;
     $this->staff      = $tciaf->staff;
@@ -138,9 +140,10 @@ class Manage extends \bloc\controller
 
     if ($key) {
       try {
-        $id = \models\person::N2ID($username);
-        $user = (new \models\person($id))->authenticate($password);
-        Application::instance()->session('TCIAF', ['id' => $id, 'user' =>  $user->getAttribute('title')]);
+        $key = \models\person::N2ID($username);
+        $user = Graph::Factory(Graph::group('person')->find("vertex[@key='{$key}']")->pick(0));
+        $user->authenticate($password);
+        Application::instance()->session('TCIAF', ['id' => $user['@id'], 'user' =>  $user->getAttribute('title')]);
         \bloc\router::redirect($redirect ?: '/');
       } catch (\InvalidArgumentException $e) {
         $type = 'invalid';
@@ -189,27 +192,47 @@ class Manage extends \bloc\controller
     return $view->render($this());
   }
 
-  protected function GETgroup(Admin $user, $to_group = null, $from_group = null, $vertex = null)
+  protected function GETgroup(Admin $user, $to_group = null, $from_group = null, $id = null)
   {
     $view = new view('views/layout.html');
 
-    if ($vertex) {
-      $vertex = Graph::ID($vertex);
+    if ($id) {
+      $vertex = Graph::ID($id);
+      $edges  = $vertex->find('edge');
+      
       $dom = Graph::instance()->storage;
       $context = $dom->pick("/graph/group[@type='{$to_group}']");
+
       if ($to_group === 'archive') {
         $vertex->setAttribute('mark', $from_group);
         $vertex->setAttribute('updated', 'expunged');
+        // remove all edges from relationships
+        foreach ($edges as $edge) {
+          $ref = Graph::id($edge['@vertex']);
+          foreach ($ref->find("edge[@vertex='{$id}' and @type='{$edge['@type']}']") as $redge) {
+            $ref->removeChild($redge);
+          }
+        }
       } else {
+        // add all edges to relationships
         $vertex->removeAttribute('mark');
-        $vertex->setAttribute('updated', (new \DateTime())->format('Y-m-d H:i:s'));
+        $vertex->setAttribute('updated', \models\graph::ALPHAID(time()));
+        
+        foreach ($edges as $edge) {
+          $ref = Graph::id($edge['@vertex']);
+          $ref->appendChild($edge->cloneNode(true))->setAttribute('vertex', $id);
+        }
+        
       }
+
       $context->insertBefore($vertex, $context->firstChild);
       $filepath = PATH . Graph::DB . '.xml';
 
       if ($dom->validate() && is_writable($filepath)) {
         $dom->save($filepath);
         \models\Search::CLEAR();
+      } else {
+        \bloc\application::instance()->log($dom->errors());
       }
     }
 
@@ -233,9 +256,6 @@ class Manage extends \bloc\controller
   protected function POSTedit(Admin $user, $request, $model, $id = null)
   {
     if ($instance = Graph::FACTORY( (Graph::ID($id) ?: $model), $_POST)) {
-
-      $instance->slugify();
-
       if ($instance->save()) {
         // clear and rebuild caches w/o slowing down response
         \models\search::CLEAR();
@@ -244,6 +264,8 @@ class Manage extends \bloc\controller
 
         \bloc\router::redirect("/manage/edit/{$instance->context['@id']}");
       } else {
+        $instance['@id'] = 'pending-' . uniqid();
+        \bloc\application::instance()->log($instance->errors);
         return $this->GETedit($user, $instance);
       }
     }
@@ -274,11 +296,13 @@ class Manage extends \bloc\controller
         ];
 
         if ($type === 'image') {
-          $path = preg_match('/\.jpe?g$/i', $name) ? "http://{$_SERVER['HTTP_HOST']}/assets/scale/1200/{$name}" : $source;
+          $path = preg_match('/\.jpe?g$/i', $name) ? "https://{$_SERVER['HTTP_HOST']}/assets/scale/1200/{$name}" : $source;
+
           $config['Body'] =  file_get_contents($path);
         } else {
-          $config['SourceFile'] = $source;
+          
         }
+        $config['SourceFile'] = $source;
 
         $result = $client->putObject($config);
 
@@ -311,7 +335,7 @@ class Manage extends \bloc\controller
           $pending = "";
         }
 
-        $media = Graph::instance()->storage->createElement('media', 'A caption');
+        $media = Graph::instance()->storage->createElement('media');
         $media->setAttribute('src',  "/{$bucket}/{$type}/{$name}{$pending}");
         $media->setAttribute('name',  $name);
         $media->setAttribute('type', $type);
@@ -324,8 +348,7 @@ class Manage extends \bloc\controller
 
         return $view->render($this($model->slug));
       } catch (\Exception $e) {
-        return $this->GETerror("The file was unable to be uploaded to amazon.\n\n{$e->getMessage()}", 500);
-        exit();
+        return $e->getMessage();
       }
     } else {
       return $this->GETerror("The Server has refused this file", 400);
@@ -336,7 +359,7 @@ class Manage extends \bloc\controller
   {
     $this->item = Graph::FACTORY(Graph::ID($_POST['vertex']['@']['id']), $_POST);
     $view = new view('views/layout.html');
-    $view->content = 'views/lists/recommendation.html';
+    $view->content = 'views/lists/rec-light.html';
     return $view->render($this());
   }
 }

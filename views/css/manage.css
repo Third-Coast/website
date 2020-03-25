@@ -53,7 +53,6 @@ form.editor label {
   font-weight:400;
   transition:color 0.25s;
   letter-spacing:0.075em;
-  text-transform:capitalize;
   margin:0.5em 0 0;
 }
 
@@ -216,7 +215,7 @@ form .recommended div {
 
 
 .backdrop {
-  position:absolute;
+  position:fixed;
   top:0;
   left:0;
   opacity:0;
@@ -479,6 +478,8 @@ div.edge.highlight {
 
 fieldset.edges dl {
   clear:both;
+  border-top: 1px dashed rgba(0,0,0,0.1);
+  padding: 1em 0;
 }
 fieldset.edges dl dt {
   width:20%;

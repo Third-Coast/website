@@ -23,6 +23,7 @@
       color:rgba(0,0,0,0.5);
       top:1em;
     }
+    
   </style>
   <header id="overview">
     <div class="banner banner-bg"  data-aspect="[$item:banner:mark]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
@@ -31,14 +32,9 @@
       <p>[$item:summary]</p>
     </div>
   </header>
-  <section class="panel">
+  <section class="panel" id="content">
     <section class="two-thirds">
-      <nav class="h4 pad-h jump">
-        <ul class="plain path">
-          <!-- iterate item:articles -->
-          <li><a href="[#$item:@id]">[$item:title]</a></li>
-        </ul>
-      </nav>
+      
       <section class="markdown pad">[$item:content:about]</section>
       <!-- iterate item:articles -->
       <article class="pad t" id="[$item:@id]">
@@ -46,21 +42,73 @@
         <section class="markdown">[$item:content:description]</section>
         <a href="#overview" class="h4 pad-v jump">back to top</a>
       </article>
-      <!-- replace sessions -->
+      
+      <!-- replace presenters -->
+      <!-- replace schedule -->
     </section>
     <section class="one-third ll">
       <img data-src="[//s3.amazonaws.com/$item:square:url]" alt="[$item:@title banner]" style="max-width:100%;"/>
-      <div class="gray-bg spot markdown">
-        <aside>[$item:content:Extras]</aside>
-      </div>
-      <!-- replace sponsors -->
-      <div class="gray-bg spot">
-        <h4 class="brown caps-lock strong">More Conferences</h4>
-        <ul class="plain path h4 m">
-          <!-- iterate item:origin:conferences -->
-          <li><a href="[/overview/conference/$edition:@id]">[$edition:year]</a></li>
+      <nav class="pad jump white-bg">
+        <ul class="plain playlist h4">
+          <!-- iterate item:articles -->
+          <li><a href="[#$item:@id]">[$item:title]</a></li>
+          <!-- iterate sections -->
+          <li><a href="[#$id]">[$title]</a></li>
         </ul>
+      </nav>
+      
+      <div class="gray-bg spot markdown">
+        <aside>[$item:content:extras]</aside>
       </div>
+      
+      <form method="GET" class="spot">
+        <h5 class="brown caps-lock strong">[$item:origin:title by year]</h5>
+        <select onchange="navigateToPage.call({href: this.value}, event);">
+          <option>Select Year</option>
+          <!-- iterate item:origin:conferences -->
+          <option value="[/conference/$edition:@key]">[$edition:year]</option>
+        </select>
+      </form>
+      
+      <!-- replace sponsors -->
+      
     </section>
   </section>
+  
+  <script type="text/javascript" async="true">
+    // <![CDATA[
+
+      var observeIntersection = function (entries) {
+        // var entry = entries.reduce((current, entry) => entry.intersectionRatio > current.intersectionRatio ? entry : current, entries[0]);
+        // console.log(entry.threshold);
+
+        entries.forEach(function (entry) {
+          console.log(entry.target.idx + ' ratio of ' + entry.intersectionRatio.toFixed(2));
+        });
+      };
+      
+      var section_observer = ('IntersectionObserver' in window) ? new IntersectionObserver(observeIntersection, {
+        // rootMargin: '0px',
+        // root: document.scrollingElement || document.documentElement,
+        threshold: [0.0, 1.0]
+      }) : false;
+      
+      document.querySelectorAll('#content article[id] > h2').forEach(function (elem, idx) {
+        elem.idx = idx;
+        section_observer.observe(elem);
+      });
+      
+      // window.lazyload = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+      //   entries.forEach(function (entry) {
+      //     if (entry.isIntersecting) {
+      //       entry.target.addEventListener('load', reveal);
+      //       entry.target.src = entry.target.dataset.src;
+      //       window.lazyload.unobserve(entry.target);
+      //     }
+      //   });
+      // }, {
+        // }) : false;
+      
+    // ]]>
+  </script>
 </article>

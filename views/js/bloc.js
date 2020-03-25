@@ -39,26 +39,23 @@ Date.prototype.parse = function (pattern) {
 };
 
 
-Element.prototype['@'] = function (obj) {
-  for (var prop in obj) {
-    this.setAttribute(prop, obj[prop]);
-  }
+Element.prototype.attr = function (obj) {
+  console.log(obj);
+  for (var prop in obj) this.setAttribute(prop, obj[prop]);
   return this;
 };
 
-/* Allow looping through NodeLists akin to arrays.
- * (Nodelists are returned from querySelectorAll and other DOM stuff)
- */
-NodeList.prototype.forEach = Array.prototype.forEach;
 
 
-/* Animation function
+/*
+ * Animation function
  */
 var Animate = function (callback) {
   return {
     animations: [],
     tween: function (element, idx) {
       if (callback.call(this.animations[idx], element)) {
+        
         requestAnimationFrame(this.tween.bind(this, element, idx));
       } else {
         if (this.animations[idx].hasOwnProperty('finish')) {
@@ -84,7 +81,7 @@ var smoothScroll = function (elem) {
   var scroller = Animate(function (element) {
     var ratio = Math.min(1, 1 - Math.pow(1 - (Date.now() - this.start) / this.duration, 5)); // float % anim complete
     var y = ratio >= 1 ? this.to : ( ratio * ( this.to - this.from ) ) + this.from;
-    element.scrollTop =  y;
+    element.scrollTop = Math.round(y);
     return (ratio < 1);
   });
   var cancelTransition = function (evt) {
@@ -345,8 +342,11 @@ Menu.prototype = {
   }
 };
 
+var randomTimecode = function() {
+  return new Array(3).fill(60).map(x=>Math.floor(x * Math.random())).map(x => ('00' + x).slice(-2)).join(':');
+};
 
-// Progress/Patience
+// Progress/Patience Constructor
 var Progress = function(container) {
 
   var svg, path, handle, elapsed, remaining;
@@ -371,13 +371,15 @@ var Progress = function(container) {
   svg.createElement('circle', { 'cx': 50, 'cy': 50, 'r': 40 });
   
   path   = svg.createElement('path', { 'd': 'M50,50', 'class': 'status', 'transform': 'rotate(-90 50 50)' });
-  handle = svg.createElement('path', { 'd': 'M50,50', 'class': 'handle', 'transform': 'rotate(-90 50 50)'});
-  grab   = svg.createElement('circle', { 'cx': 50, 'cy': 50, 'r': 5, 'class': 'grab', 'transform': 'rotate(-90 50 50)'});
+  handle = svg.createElement('path', { 'd': 'M50,50', 'class': 'handle', 'transform': 'rotate(-90 50 50)' });
   
   
   this.update = function (percentage, scrub, elapsed_msg, remain_msg) {
-    elapsed.textContent = elapsed_msg;
+    if (isNaN(percentage)) return;
+    
+    elapsed.textContent   = elapsed_msg;
     remaining.textContent = remain_msg;
+
     var radian = (2 * Math.PI) * percentage;
     var x = (Math.cos(radian) * 40) + 50;
     var y = (Math.sin(radian) * 40) + 50;
@@ -387,8 +389,6 @@ var Progress = function(container) {
     if (scrub) {
       handle.setAttribute('d', data + 'L50,50z');
       handle.position = percentage;
-      grab.setAttribute('cx', x);
-      grab.setAttribute('cy', y);
     } else {
       path.setAttribute('d', data);
     }
@@ -399,20 +399,20 @@ var Progress = function(container) {
   };
 
   this.setState = function (state) {
-    this.element.dataset.state = state;
+    
     if (state == 'waiting') {
-      // TODO, see below for better animation sequence
       elapsed.textContent = '...one';
       remaining.textContent = 'moment';
     }
+    
+    this.element.dataset.state = state;
   };
-
-  return this;
 };
 
-var randomTimecode = function() {
-  container.innerHTML = new Array(3).fill(60).map(x=>Math.floor(x * Math.random())).map(x => ('00' + x).slice(-2)).join(':');
-  if (window.pending) setTimeout(update, 50);
+Progress.prototype = {
+  get rando() {
+    return Math.random();
+  }
 };
 
 
@@ -451,11 +451,13 @@ if (window.history.pushState) {
           a.classList.add('selected');
         });
       }, 10);
-
+      
       // track page timings in analytics
       ga('send', 'timing', 'XHR Request', 'load', Math.round(performance.now() - this.benchmark));
       // if
       bloc.load(true);
+      
+      checkHashes();
     },
     timeout: function (evt) {
       alert('This page is taking a bit long... either our server is struggling or your internet connection is. Please try again!');
@@ -478,18 +480,20 @@ if (window.history.pushState) {
   }, 8500);
 
   var adjust = function (num) {
-    return Math.round((parseFloat(num, 10) + (Math.cos(Math.random() * 2 * Math.PI) * 25))) + '%';
+    return Math.max(Math.round((parseFloat(num, 10) + (Math.cos(Math.random() * 2 * Math.PI) * 25))), 75) + '%';
   };
 
   window.navigateToPage = function (evt) {
     var append = this.href.match(/\?/) ? '' : '?ref='+btoa(window.location.pathname);
     if (evt.type != 'popstate') {
       setTimeout(function () {
+        scrollTo(0,0);
         document.body.scrollTop = 0;
         document.querySelector('#browse').scrollTop = 0;
       }, 150);
       history.pushState(null, null, this.href);
     } else if (evt.timeStamp > window.dataLayer[0].start && evt.timeStamp - window.dataLayer[0].start < 1000) {
+      console.log(evt);
       // Safari consistently fires this event on load, which refreshes the page.
       // This checks the event time vs. the recorded start and avoid it... hack.
       return;
@@ -507,9 +511,10 @@ if (window.history.pushState) {
 
   document.body.addEventListener('click', function (evt) {
     if (evt.target.nodeName.toLowerCase() === 'a') {
-      if (evt.target.hash) {
+      if (evt.target.hash && (window.location.pathname == evt.target.pathname)) {
         evt.preventDefault();
-        var elem = document.getElementById(evt.target.hash.substr(1));
+        var elem = document.querySelector(evt.target.hash);
+        
         if (elem) {
           window.Adjust.scroll(+elem.offsetTop, 500);
         }
@@ -543,9 +548,34 @@ function quickPlay(active, evt) {
   button.dispatchEvent(click);
 }
 
+function checkHashes() {
+  setTimeout(function () {
+
+    document.querySelectorAll('article h3, article > h2').forEach(function(q) {
+      if (!q.firstChild.nodeValue) return;
+      q.id = q.firstChild.nodeValue.replace(/[^a-z]+/ig, '-').replace(/^-+|-+$/g, '').toLowerCase();
+    });
+    
+    if (window.location.hash) {
+      var elem = document.getElementById(window.location.hash.substr(1));
+      if (elem) {
+        window.Adjust.scroll(+elem.offsetTop - 10, 750);
+      }
+    }
+  }, 750);
+}
+
 var reveal = function () {
   if (this.classList.contains('proxy')) {
-    this.parentNode.style.backgroundImage = `url(${this.src})`;
+    var context = this.parentNode;
+    var prefix = context.style.backgroundImage;
+    if (prefix) {
+      prefix += ', ';
+    }
+    
+    context.style.backgroundImage = prefix + `url(${this.src})`;
+    setTimeout(DOMTokenList.prototype.add.bind(context.classList, 'loaded'), 10);
+    
     this.remove();
   } else {
     this.removeAttribute('data-src');
@@ -553,7 +583,7 @@ var reveal = function () {
 }
 
 bloc.init(function () {
-  var browse = mobile ? document.body : document.querySelector('#browse');
+  var browse = document.scrollingElement || document.documentElement;
 
   window.Adjust = smoothScroll(browse);
   window.lazyload = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
@@ -570,23 +600,33 @@ bloc.init(function () {
     threshold: [0, 0.5, 1]
   }) : false;
   
+  addEventListener('scroll', function(evt) {
+    document.body.dataset.position = Math.round(pageYOffset / (document.documentElement.scrollHeight - innerHeight) * 100);
+  }, {passive: true});
+  
+  var header = document.querySelector('body > header');
+  document.querySelector('button.menu-trigger').addEventListener('touchstart', function(evt) {
+    if (document.body.classList.contains('menu')) {
+      this.removeAttribute('style');
+    } else {
+      this.style.height = window.innerHeight + 'px';
+      this.style.overflow = 'hidden';
+    }
+  }.bind(header), {passive: true});
+  
+  if (mobile) {
+    addEventListener('resize', function(evt) {
+      if (document.body.classList.contains('menu')) {
+        this.style.height = window.innerHeight + 'px';
+      }
+    }.bind(header));
+  }
+ 
   addEventListener('popstate', navigateToPage.bind(document.location), false);
   addEventListener('offline', toggleStatus);
   addEventListener('online', toggleStatus);
   
-  setTimeout(function () {
-
-    document.querySelectorAll('article h3').forEach(function(q) {
-      q.id = q.innerHTML.replace(/[^a-z]+/ig, '-').replace(/^-+|-+$/g, '').toLowerCase();
-    });
-    
-    if (window.location.hash) {
-      var elem = document.getElementById(window.location.hash.substr(1));
-      if (elem) {
-        window.Adjust.scroll(+elem.offsetTop - 10, 750);
-      }
-    }
-  }, 750);
+  checkHashes();
   
 });
 
@@ -623,9 +663,6 @@ bloc.define('site-search', function (instance) {
   });
 });
 
-// _Capitalized word indicates an instance of an object
-
-
 function Track(config) {
   this.config = config;
   this.callback = function(){};
@@ -660,7 +697,7 @@ var Playlist = function (player, attributes) {
   this.tracks  = {};
   this.pointer = null;
   this.player  = player;
-  this.element = player.container.appendChild(document.createElement('ul')['@'](attributes));
+  this.element = player.container.appendChild(document.createElement('ul').attr(attributes));
   this.element.addEventListener('click', this.select.bind(this));
   this.scroller = smoothScroll(this.element);
 };
@@ -705,7 +742,7 @@ Playlist.prototype = {
   add: function (track) {
     if (! this.tracks.hasOwnProperty(track.id)) {
       this.tracks[track.id] = track;
-      track.element = this.element.appendChild(document.createElement('li')['@']({id: track.id}));
+      track.element = this.element.appendChild(document.createElement('li').attr({id: track.id}));
     }
   },
   // not a real queue, as some elements bay be skipped
@@ -726,6 +763,7 @@ Playlist.prototype = {
   }
 };
 
+
 var Player = function (container, data, message) {
   this.container = container;
   this.container.id  = 'Player';
@@ -733,28 +771,19 @@ var Player = function (container, data, message) {
   this.elements = [];
   this.index    = 0;
 
-  var toggle = this.container.appendChild(document.createElement('button')['@']({
-    'class': 'toggle',
-  }));
 
-  toggle.textContent = '✕';
-
-  toggle.addEventListener('click', function (evt) {
-    document.body.dataset.view = document.body.dataset.view == 'browse' ? 'media' : 'browse';
-  });
-
-  var controls = this.container.appendChild(document.createElement('div')['@']({
+  var controls = this.container.appendChild(document.createElement('div').attr({
     'class': data.controls
   }));
 
-  var button = controls.appendChild(document.createElement('button')['@']({
-    'type': 'button'
+  var button = controls.appendChild(document.createElement('button').attr({
+    'type': 'button',
+    'aria-label': 'Play Audio'
   }));
 
   this.playlist = new Playlist(this, {'class': data.playlist});
   this.button   = new Button(button, 'play');
   this.meter    = new Progress(controls);
-
   this.audio    = controls.appendChild(document.createElement('audio'));
 
   ['ended','timeupdate','error','seeked','seeking','playing','waiting'].forEach(function (event) {
@@ -769,23 +798,21 @@ var Player = function (container, data, message) {
   this.meter.element.addEventListener(mobile ? 'touchstart' : 'mouseover', function (evt) {
     this.meter.element.classList.add('hover');
     this.meter.update(evt.theta() / 360, true);
-    document.documentElement.classList.add('lock');
   }.bind(this), mobile ? {passive: true} : false);
 
   this.meter.element.addEventListener(mobile ? 'touchend' : 'mouseout', function (evt) {
     this.meter.element.classList.remove('hover');
-    document.documentElement.classList.remove('lock');
   }.bind(this), mobile ? {passive: true} : false);
 
   this.meter.element.addEventListener(mobile ? 'touchmove' : 'mousemove', function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    var p  = evt.theta() / 360;
+    var p = evt.theta() / 360;
     var d = this.audio.duration * 1e3;
     var t = d * (1 - p);
     var m = "{h}:{m}:{s}";
     this.meter.update(p, true, new Date(d-t).parse(m), new Date(t).parse(m));
-  }.bind(this), mobile ? {passive: true} : false);
+  }.bind(this),  mobile ? {passive: true} : false);
 
   this.meter.element.addEventListener(mobile ? 'touchend' : 'click', function (evt) {
     ga('send', 'event', 'Audio', 'scrub', this.playlist.current.id);
@@ -813,7 +840,7 @@ Player.prototype = {
     }
     this.css = document.head.appendChild(document.createElement('style'))
     this.css.sheet.insertRule('.'+track.id+' button {background-position:50% 87.5%;cursor:default;opacity:0.9;box-shadow:none;background-color:rgba(255,255,255,0.75) !important;border-color:#fff;mix-blend-mode:normal !important;}', 0);
-        this.css.sheet.insertRule('li#'+track.id+' {border-color:#5B9B98;background-color:#5B9B98;color:#fff;}', 1);
+    this.css.sheet.insertRule('li#'+track.id+' {border-color:#5B9B98;background-color:#5B9B98;color:#fff;}', 1);
     this.audio.play();
     ga('send', 'event', 'Audio', 'play', track.id);
   },
@@ -829,9 +856,7 @@ Player.prototype = {
   ended: function (evt) {
     this.pause();
     ga('send', 'event', 'Audio', 'finished', this.playlist.current.id);
-    if (this.playlist.next()) {
-      this.play();
-    }
+    if (this.playlist.next()) this.play();
 
   },
   playing: function (evt) {
@@ -854,8 +879,6 @@ Player.prototype = {
       this.button.setState('pause');
       this.meter.setState('playing');
     }
-    
-    
   },
   error: function (evt) {
     ga('send', 'event', 'Audio', 'error', this.playlist.current.id);
@@ -883,7 +906,6 @@ function loadButtonAudio(button, evt) {
     return false;
   }
 
-
   var selected = button.parentNode.querySelector('audio');
   player.playlist.clearUnplayed();
 
@@ -902,23 +924,13 @@ function loadButtonAudio(button, evt) {
     // do if in the playlist vs not in the playlist.
     player.playlist.add(track);
 
-    // this probably isn't important anymore, elim. condition
-    // perhaps set callback as part of config to track obj.
     if (aux_button && aux_button != button) {
-      track.callback = function (evt) {
-        // proxy a click to the playlist.
-        navigateToPage.call({href: audio.dataset.ref}, evt);
-      };
+      track.callback = navigateToPage.bind({href: audio.dataset.ref});
       aux_button.removeAttribute('onclick');
       aux_button.addEventListener('click', player.playlist.select.bind(player.playlist, {target: {id: track.id}}));
     }
 
-
-    if (selected === audio) {
-      // set this to be selected
-      player.playlist.pointer = track.id;
-    }
-
+    if (selected === audio) player.playlist.pointer = track.id;
     audio.parentNode.removeChild(audio);
 
   });
@@ -928,73 +940,35 @@ function loadButtonAudio(button, evt) {
 }
 
 
-var Button = function (button, state) {
-  var svg, indicator, animate, states, scale, g;
+var Button = function (trigger, state) {
   this.state = state || 'play';
-
-  svg = new SVG(button, 100, 100);
-
-  states = {
-    play:  'M 20 0 c 0  0, 0 100, 0 100 l 40 -30 l 0 -40 z m 40 30 c 0 0, 0 40, 0 40 l 30 -20 l 0 0 z',
-    pause: 'M 5 0 c 0  0, 0 100,  0 100 l  40 0 l 0 -100 z m 50 0 c 0  0, 0 100,    0 100 l 40 0 l 0 -100 z',
-    error: 'M16,10 l10,0l-3,20  l-3,0l-3,-20  m3,22  l4,0 l0,4    l-4,0 z',
-    wait:  'M20 0 c 0 50, 60 50, 60 100 l -30 0 l 0 -100 z m 60 0 c 0 50, -60 50, -60 100 l 30 0 l 0 -100 z'
+  
+  var svg = new SVG(trigger, 100, 100);
+  
+  var states = {
+    play:  'm90 50 l -60 35  l 0 -35 l 0 -35 z    m 0 0 l -60 35  l 0 -35 l 0 -35 z',
+    pause: 'm 45 0  l 0 100 l -40  0 l 0 -100 z m 10  0 l  0 100 l 40   0 l 0 -100 z',
+    error: 'm 16 10 l 10 0  l -3 20  l -3 0   z m 3  22 l  4   0 l 0    4 l -4   0 z',
+    wait:  'm 15 5  l 70 90 l -35  0 l 0 -90  z m 70  0 l -70 90 l 35   0 l  0 -90 z'
   };
 
-
-  this.factor = 1;
-
-  this.press = function (callback) {
-    button.addEventListener(mobile ? 'touchend' : 'click', callback);
-  };
-
-  // states match the d
-  this.setState = function (state, e) {
-    if (state === this.state) return;
-    
-    indicator.setAttribute('d', states[this.state]);
-
-    animate.setAttribute('from', states[this.state]);
-    animate.setAttribute('to', states[state]);
-
-    animate.beginElement();
-
-    this.state = state;
-    
-    // Delay this, just for appearance
-    setTimeout(function () {
-      button.className = state;
-    }, 150);
-
-  };
-
-  g = svg.createElement('g', {
-    transform: 'scale(1) translate(1,1)'
-  });
-
-  indicator = svg.createElement('path', {
-    'd': states[this.state],
-    'class': 'indicator'
-  }, g);
-
-
-
-  animate = svg.createElement('animate', {
+  var animate = svg.createElement('animate', {
     attributeName: 'd',
     attributeType: 'XML',
-    from: states.play,
-    to: states.pause,
     dur: '0.25s',
     begin: 'indefinite',
     fill: 'freeze'
-  }, indicator);
-
-  if (! animate.beginElement) {
-    animate.beginElement = function () {
-      indicator.setAttribute('d', animate.getAttribute('to'));
-    };
-  }
+  }, svg.createElement('path', { 'class': 'indicator',  'd': states[this.state] } ));
 
   
+  this.press    = EventTarget.prototype.addEventListener.bind(trigger, mobile ? 'touchend' : 'click');
+  this.setState = function (state, evt) {
+    if (state === this.state) return;
+    animate.setAttribute('from', states[this.state]);
+    animate.setAttribute('to',    states[state]);
+    animate.beginElement();
+    trigger.className = this.state = state;
+  };
+
   this.setState(this.state);
 };

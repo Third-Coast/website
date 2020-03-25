@@ -9,18 +9,7 @@ class Article extends Vertex
 {
   use traits\banner, traits\periodical;
   public $_premier = "Publication Date";
-  static public $fixture = [
-    'vertex' => [
-      'abstract' => [
-        [
-          'CDATA' => '',
-          '@' => [
-            'content' => 'description'
-          ]
-        ]
-      ]
-    ]
-  ];
+  static public $fixture = [];
 
   protected $edges = [
     'producer' => ['person'],
@@ -36,7 +25,7 @@ class Article extends Vertex
     parent::__construct($id, $data);
 
     if ($this->context['premier']->count() < 1) {
-      $this->context->getFirst('premier')->setAttribute('date', $this->context["@created"]);
+      $this->context->getFirst('premier')->setAttribute('date', date('Y-m-d', $this->created));
     }
   }
 
@@ -49,8 +38,15 @@ class Article extends Vertex
 
   public function getSuffix(\DOMElement $context)
   {
-    \bloc\application::instance()->log();
-    return substr(strip_tags($this->title), 18);
+    // return substr(strip_tags($this->title), 18);
+    return preg_replace('/behind.the.scenes\s/i', '', strip_tags($this->title));
+  }
+  
+  public function getProducers(\DOMElement $context)
+  {
+    return $context->find("edge[@type='producer' and @vertex!='A']")->map(function($edge) {
+      return ['person' => new Person($edge['@vertex']), 'role' => 'Producer'];
+    });
   }
   
   public function getSections(\DOMElement $context) 

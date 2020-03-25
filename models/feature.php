@@ -1,6 +1,4 @@
-<?php
-
-namespace models;
+<?php namespace models;
 
 function timecode($time) {
   return $time <= 60 ?   sprintf('%02d', floor($time)) : timecode($time / 60) .':'. sprintf('%02d', $time % 60);
@@ -15,7 +13,8 @@ function timecode($time) {
 
     protected $_help = [
       'overview' => 'Features represent Stories, Re:sounds, and Conference Sessions.',
-      'premier' => 'Any date entered into this field will be converted to a timestamp, though site visitors will only see the year. This helps Re:sound keep track of order. If this field is empty, the feature will NOT show up in library—use to your advantage!.',
+      'premier' => 'A full timestamp is used for accuracy, though in most instances site visitors will only see the year. This helps Re:sound keep track of order. If this field is empty, the feature will NOT show up in library—so leave empty if you would like to keep items hidden!.',
+      'duration' => 'This is only necessary if the feature/session item will show up on a schedule, ie., the TCF Conference',
       'edges' => 'A story should have a producer associated, wheras a conference session should have a presenter associated as well as be attached to the appropriate happening. Re:sounds should have the TCF (organization) listed as a producer in addition to other folks.',
       'extras' => '(extras are legacy to accomodate the old site—they do not serve a particularly useful function on new features)'
     ];
@@ -46,14 +45,14 @@ function timecode($time) {
       $this->template['upload'] = 'audio-image';
       if ($this->happenings->count() > 0 && $this->presenters->count() > 0) {
         $this->template['digest'] = 'session';
-      } else if ($this->context->find('edge[@vertex="TCIAF"]')->count() > 0) {
+      } else if ($this->context->find('edge[@vertex="A"]')->count() > 0) {
         $this->template['digest'] = 'broadcast';
       }
     }
-
+    
     public function setDateAttribute(\DOMElement $context, $date)
     {
-      if (! empty($date) && $date = (new \DateTime($date))->format('Y-m-d H:i:s')) {
+      if (! empty($date) && $date = (new \DateTime($date))->format('Y-m-d\TH:i')) {
         $context->setAttribute('date', $date);
       }
     }
@@ -77,9 +76,11 @@ function timecode($time) {
         }
       }
 
-      return Graph::instance()->query('graph/config')->find('/spectra')->map(function($item) use($spectra) {
-        return ['item' => $item, 'title' => $item->nodeValue, 'value' => $spectra[$item['@id']]];
+      $sp = Graph::instance()->query('graph/config/')->find('spectra')->map(function($item) use($spectra) {
+        $key = substr($item['@id'], 1);
+        return ['key' => $key, 'item' => $item, 'title' => $item->nodeValue, 'value' => $spectra[$key]];
       });
+      return $sp;
     }
 
     public function getGradient(\DOMElement $context)
@@ -111,7 +112,7 @@ function timecode($time) {
       $types = [];
 
       foreach ($context->find("edge[@type]") as $edge) {
-        if ($edge->getAttribute('vertex') === 'TCIAF') return "show";
+        if ($edge->getAttribute('vertex') === 'A') return "show";
         $types[] = $edge->getAttribute('type');
       }
 
@@ -150,8 +151,8 @@ function timecode($time) {
 
     public function getProducers(\DOMElement $context)
     {
-      return $context->find("edge[@type='producer' and @vertex!='TCIAF']")->map(function($edge) {
-        return ['person' => new Person($edge['@vertex']), 'role' => 'Producer'];
+      return $context->find("edge[@type='producer' and @vertex!='A']")->map(function($edge) {
+        return ['person' => Graph::FACTORY(Graph::ID($edge['@vertex'])), 'role' => 'Producer'];
       });
     }
 
@@ -208,8 +209,6 @@ function timecode($time) {
 
     public function getRecommended(\DOMElement $context)
     {
-
-     
       $correlation = \controllers\Task::pearson($context['@id'])->best;
       arsort($correlation);
       

@@ -1,6 +1,14 @@
 <article class="competition page"  vocab="http://schema.org/" typeof="Event">
+  <style type="text/css" media="screen">
+    /* <![CDATA[ */
+    img[title="enter"], img[title~="support"] {
+      max-width: 30%;
+    }
+    /* ]]> */
+  </style>
+  
   <header id="overview">
-    <div class="[banner $item:@sticky banner-bg]" data-something="[$item:type]" data-aspect="[$item:banner:mark]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
+    <div class="[banner $item:@sticky banner-bg]" data-aspect="[$item:banner:mark]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
       <h1 class="lead tracked display strong t" data-id="[$item:@id]">[$item:title]</h1>
       <p>[$item:summary]</p>
     </div>
@@ -16,9 +24,20 @@
     </div>
     <section class="one-third ll">
       <img data-src="[//s3.amazonaws.com/$item:square:url]" alt="[$item:@title banner]" style="max-width:100%;"/>
+
+      <nav class="pad jump white-bg">
+        <ul class="plain playlist h4">
+          <!-- iterate item:articles -->
+          <li><a href="[#$item:@id]">[$item:title]</a></li>
+          <!-- iterate sections -->
+          <li><a href="[#$id]">[$title]</a></li>
+        </ul>
+      </nav>
+      
       <div class="gray-bg spot markdown">
-        <aside>[$item:content:Extras]</aside>
+        <aside>[$item:content:extras]</aside>
       </div>
+      
       <!-- replace judges -->
       <!-- replace sponsors -->
       
@@ -27,7 +46,7 @@
         <select onchange="navigateToPage.call({href: this.value}, event);">
           <option>Select Year</option>
           <!-- iterate item:origin:competitions -->
-          <option value="[/overview/competition/$edition:@id]">[$edition:year]</option>
+          <option value="[/competition/$edition:@key]">[$edition:year]</option>
         </select>
       </form>
       

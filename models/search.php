@@ -16,8 +16,7 @@ namespace models;
     public $key = '@id',
            $tag = '@title';
 
-
-
+    
     static public function CLEAR($directory = '/')
     {
       $path = PATH . 'data/cache/search';
@@ -137,4 +136,5 @@ namespace models;
       }
       return $json;
     }
+  
   }

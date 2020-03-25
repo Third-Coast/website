@@ -4,9 +4,11 @@
     ul.staff em, cite {
       color:#775;
       padding:0.25em 0;
-      margin-top:0.5em;
+      margin:0.125em -0.75em 0 -0.5em;
       display:inline-block;
-      letter-spacing:0.075em;
+    }
+    ul.staff em:empty {
+      display:none;
     }
     /* ]]> */
   </style>
@@ -23,7 +25,6 @@
       <section class="markdown">[$item:content:about]</section>
       <h2 class="display t">Supporters</h2>
       <p>Our sincere thanks to the following organizations and individuals for their generous support of the Third Coast Festival.</p>
-      <h4 class="t b">Organizations</h4>
       <!-- iterate item:funders-->
       <div>
         <h6 class="caps-lock t">[$group:name]</h6>
@@ -32,43 +33,67 @@
           <li><a vocab="http://schema.org/" typeof="Organization" href="[$item:location]">[$item:@title]</a></li>
         </ul>
       </div>
-      <h4 class="t b">Individuals</h4>
-      <!-- iterate item:friends-->
-      <div>
-        <h6 class="caps-lock t">[$group:name]</h6>
-        <ul>
-          <!-- iterate group:items -->
-          <li>[$item:@title]</li>
-        </ul>
-      </div>
     </section>
 
-    <nav class="one-third ll">
+    <nav class="one-third l">
       <div class="gray-bg spot">
         <h4 class="strong brown caps-lock">staff</h4>
         <ul class="staff plain">
-          <!-- iterate item:staff -->
+          <!-- iterate item:staff:current -->
           <li>
             <em>[$position]</em>
             <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
           </li>
         </ul>
       </div>
+      
+      <div class="gray-bg spot">
+        <h4 class="strong brown caps-lock">Community Advisory Group</h4>
+        <ul class="staff plain">
+          <!-- iterate item:board:community -->
+          <li>
+            <em>[$position]</em>
+            <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
+          </li>
+        </ul>
+      </div>
+      
+      
+      <div class="gray-bg spot">
+        <h4 class="strong brown caps-lock">Co-Founders</h4>
+        <ul class="staff plain">
+          <!-- iterate item:staff:cofounder -->
+          <li>
+            <em>[$position]</em>
+            <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="gray-bg spot">
+        <h4 class="strong brown caps-lock">Staff Emeritae</h4>
+        <ul class="staff plain">
+          <!-- iterate item:staff:emeritus -->
+          <li>
+            <em>[$position]</em>
+            <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
+          </li>
+        </ul>
+      </div>
+      
+      
+      
       <div class="gray-bg spot">
         <h4 class="strong brown caps-lock">Board of Directors</h4>
         <ul class="staff plain">
-        <!-- iterate item:board -->
+        <!-- iterate item:board:directors -->
           <li>
             <em>[$position]</em>
             <h5 data-id="[$person:@id]">[$person:title]</h5>
           </li>
         </ul>
       </div>
-      <div class="gray-bg spot">
-        <h4 class="strong brown caps-lock b">Work with us</h4>
-        <h2 class="display">Have what it takes?</h2>
-        <p>Visit our <a href="/overview/opportunities">Jobs and Internships page</a> to find out more about available positions or email us at <a href="mailto:info@thirdcoastfestival.org">info@thirdcoastfestival.org</a>, for more information.</p>
-      </div>
+      <div class="gray-bg spot markdown">[$item:content:extras]</div>
     </nav>
   </section>
 </article>

@@ -17,23 +17,10 @@ abstract class Vertex extends \bloc\Model
 
   static public $fixture = [
     'vertex' => [
-      '@' => ['id' => null, 'title' => '', 'created' => '', 'updated' => '', 'mark' => 0],
-      'abstract' => [
-        [
-          'CDATA'  => '',
-          '@' => ['content' => 'description']
-        ]
-      ],
-      'location' => [
-        'CDATA' => ''
-      ],
-      'premier' => [
-        'CDATA' => '',
-        '@' => [
-          'date' => null
-        ]
-      ],
+      '@' => ['id' => null, 'title' => '', 'created' => '', 'updated' => '', 'text' => 'description'],
       'media' => [],
+      'img' => [],
+      'audio' => [],
       'edge'  => [],
     ]
   ];
@@ -47,12 +34,23 @@ abstract class Vertex extends \bloc\Model
     }, $this->_help);
     return new \bloc\types\Dictionary($help);
   }
+  
+  public function getCreated(\DOMElement $context)
+  {
+    return empty($context['@created']) ? time() : \models\graph::INTID($context['@created']);
+  }
 
   public function setIdAttribute(\DOMElement $context, $id)
   {
+    $flag = 'pending-';
     if (empty($id)) {
-      $id = substr($this->_model, 0, 1) . '-' . uniqid();
+      $id = $flag . uniqid();
+    } else if (substr($id, 0, strlen($flag)) === $flag) {
+      $size = $context->ownerDocument->documentElement->getAttribute('serial') + 1;
+      $context->ownerDocument->documentElement->setAttribute('serial', $size);
+      $id = Graph::ALPHAID($size);
     }
+
     $context->setAttribute('id', $id);
   }
 
@@ -64,47 +62,56 @@ abstract class Vertex extends \bloc\Model
 
   public function setUpdatedAttribute(\DOMElement $context)
   {
-    $context->setAttribute('updated',  (new \DateTime())->format('Y-m-d H:i:s'));
+    $context->setAttribute('updated',  Graph::ALPHAID(time()));
   }
 
-  public function setAbstract(\DOMElement $context, array $abstract)
+  public function setTextAttribute(\DOMElement $context, $abstract)
   {
-    if (empty($abstract['CDATA'])) return false;
-    $src = 'data/abstracts/' .$context->parentNode->getAttribute('id') . '-' . $context->getIndex() . '.html';
-    $url = Graph::instance()->storage->createAttribute('src');
-    $url->appendChild(Graph::instance()->storage->createTextNode($src));
-    $context->setAttributeNode($url);
-    $context->setAttribute('content', $abstract['@']['content'] ?? self::$fixture['vertex']['abstract'][0]['@']['content']);
-    $text = $abstract['CDATA'];
-    if ($context->parentNode['@mark'] != 'html') {
-      $markdown = new \vendor\Parsedown;
-      $markdown->setBreaksEnabled(true);
-      $text = $markdown->text($abstract['CDATA']);
-
+    if (! is_array($abstract)) {
+      $abstract = array_fill_keys(explode(' ', $abstract), '');
     }
-    file_put_contents(PATH . $src, $text);
-    return true;
+    
+    foreach ($abstract as $type => $text) {
+      if ($text == '') continue;
+      if ($context['@mark'] != 'html') {
+        $markdown = new \vendor\Parsedown;
+        $markdown->setBreaksEnabled(true);
+        $text = $markdown->text($text);
+      }
+      
+      file_put_contents(PATH . "data/text/{$type}/{$context['@id']}.html", $text);      
+    }
+    
+    $context->setAttribute('text', implode(' ', array_keys($abstract)));
+    
   }
 
   public function getAbstract(\DOMElement $context, $parse = true)
   {
-    if ($context['abstract']->count() < 1) {
+    $abstracts = new \bloc\types\dictionary(explode(' ', $context['@text']));
+    if ($abstracts->count() < 1) {
+
       return [[
-       'type' => strtolower(array_pop(static::$fixture['vertex']['abstract'])['@']['content'] ?? 'description'),
+       'type' => strtolower(static::$fixture['vertex']['@']['text'] ?? 'description'),
        'index' => 0,
        'text' => '',
        'required' => 'required',
       ]];
     }
+    
+    
 
-    return $context['abstract']->map(function($abstract) use($parse, $context){
-			$path = PATH . $abstract->getAttribute('src');
+    return $abstracts->map(function($type, $idx) use($parse, $context){
+
+			$path = trim(PATH . "data/text/{$type}/{$context['@id']}.html");
+
 			$content = file_exists($path) ? file_get_contents($path) : null;
 
       $text = $parse && $context['@mark'] != 'html' ? (new \vendor\Parseup($content))->output() : ($parse ? htmlentities($content) : $content);
+    
       return [
-       'type'    => $abstract->getAttribute('content'),
-       'index'   => $abstract->getIndex(),
+       'type'    => $type,
+       'index'   => $idx,
        'text'    => $text,
       ];
     });
@@ -132,8 +139,12 @@ abstract class Vertex extends \bloc\Model
   {
 		$abstract = $this->getAbstract($context, false);
 		if (!is_object($abstract)) return;
+    /*
+      TODO should return first paragraph, not first element
+    */
     if ($node = \bloc\DOM\Document::ELEM("<root>{$abstract->current()['text']}</root>")) {
       if ($node->childNodes->length > 0) {
+        \bloc\application::instance()->log($node->firstChild->write());
         $len = strlen($node->firstChild->nodeName) + 2;
         return substr($node->firstChild->write(), $len, -($len + 1));
       }
@@ -143,30 +154,41 @@ abstract class Vertex extends \bloc\Model
 
   public function setEdge(\DOMElement $context, $value)
   {
-    $atts  = $value['@'];
-    $eid   = $context->parentNode['@id'];
-    $ref   = Graph::ID($atts['vertex']);
-
+    $atts = $value['@'];
+    $eid  = $context->parentNode['@id'];
+    $ref  = Graph::ID($atts['vertex']);
     $type =  $atts['type'] ?: $context['@type'];
-    $edges = $ref->find("edge[@vertex='{$eid}' and @type='{$type}']");
-
-    $connect = $edges->count() > 0 ? $edges->pick(0) : $ref->appendChild(Graph::instance()->storage->createElement('edge'));
+    
+    // find connected edges
+    $connected = $ref->find("edge[@vertex='{$eid}' and @type='{$type}']");
 
     if (empty($atts['type'])) {
-      $ref->removeChild($connect);
+      foreach ($connected as $connection) {
+        $ref->removeChild($connection);
+      }
       return false;
     }
-
+    
     $context->setAttribute('type',  $atts['type']);
-    $connect->setAttribute('type', $atts['type']);
-
     $context->setAttribute('vertex', $atts['vertex']);
-    $connect->setAttribute('vertex', $eid);
-
+    
     if (array_key_exists('CDATA', $value)) {
       $context->nodeValue = $value['CDATA'];
-      $connect->nodeValue = $value['CDATA'];
     }
+    
+
+    
+    
+    if ($context->parentNode->parentNode['@type'] != 'archive') {
+      if ($connected->count() < 1) {
+        $ref->appendChild($context->cloneNode(true))->setAttribute('vertex', $eid);
+      }
+    } else if ($connected->count() > 0) {
+      foreach ($connected as $connection) {
+        $ref->removeChild($connection);
+      }
+    }
+
   }
 
   public function setMedia(\DOMElement $context, $media)
@@ -184,7 +206,7 @@ abstract class Vertex extends \bloc\Model
     $context->setAttribute('src',  $media['@']['src']);
     $context->setAttribute('type', $media['@']['type']);
     $context->setAttribute('mark', $media['@']['mark']);
-    if (array_key_exists('CDATA', $media)) {
+    if (array_key_exists('CDATA', $media)  && strtolower($media['CDATA'] != 'a caption')) {
       $context->nodeValue = $media['CDATA'];
     }
   }
@@ -212,8 +234,8 @@ abstract class Vertex extends \bloc\Model
 
   public function getStatus($context)
   {
-    $created  = strtotime($context['@created']);
-    $updated  = strtotime($context['@updated']);
+    $created  = strtotime(Graph::INTID($context['@created']));
+    $updated  = strtotime(Graph::INTID($context['@updated']));
     $response = [];
 
     if (!empty($this->errors)) {
@@ -245,7 +267,6 @@ abstract class Vertex extends \bloc\Model
 		foreach ($this->getAbstract($context, false) as $abstract) {
 			$dict[$abstract['type']] = $abstract['text'];
     }
-
 		return new \bloc\types\Dictionary($dict);
   }
 
@@ -286,7 +307,7 @@ abstract class Vertex extends \bloc\Model
 
 
     }
-
+    
     $out = [];
 
     foreach ($output as $type => $config) {
@@ -303,52 +324,25 @@ abstract class Vertex extends \bloc\Model
 
   }
 
-  public function GETpermalink(\DOMElement $context)
+  public function getPermalink(\DOMElement $context)
   {
-    return "/explore/{$this->_model}/{$context['@id']}";
+    return "/{$this->_model}/{$context['@key']}";
   }
-
-  public function slugify()
+  
+  public function setKeyAttribute(\DOMElement $context, $value, $unique = '')
   {
-    $mark = $this->context['@mark'];
-    if ($mark == 'lock' || $mark == 'html') return;
+    setlocale(LC_ALL, "en_US.utf8");
+    $title = iconv('UTF-8', 'ASCII//TRANSLIT', $this->title);
     $find = [
-      '/^[^a-z]*(b)ehind\W+(t)he\W+(s)cenes[^a-z]*with(.*)/i',
-      '/(re:?sound\s+#\s*[0-9]{1,4}:?\s*|best\s+of\s+the\s+best:\s*)/i',
-      '/^the\s/i',
-      '/^\W+|\W+$/',
-      '/[^a-z\d]+/i',
-      '/^([^a-z])/i',
-      '/\-([ntscw]\-)/',
+      '/^[^a-z]*behind\W+the\W+scenes[^a-z]*with(.*)/i' => '$1-bts',
+      '/(re:?sound\s+#\s*[0-9]{1,4}:?\s*|best\s+of\s+the\s+best:\s*)/i' => '',
+      '/^the\s/i'    => '',
+      '/^\W+|\W+$/'  => '',
+      '/[^a-z\d\s]/i' => '',
+      '/\s+/' => '-',
     ];
-    $id = $this->context['@id'];
-    $slug = strtolower(preg_replace($find, ['$4-$1$2$3', '', '', '', '-', "_$1", "$1"], $this->context['@title']));
+    $key =  strtolower(preg_replace(array_keys($find), array_values($find), $title));
+    $context->setAttribute('key', $key);
 
-    // only interested in this rigamarole if the slug and id are quite different
-    if (levenshtein($slug, $id) > 10) {
-      while (Graph::ID($slug)) {
-        $slug .=  date('-m-d-y', strtotime($this->context['@created']));
-      }
-      // set new id to slugged title
-      $this->setIdAttribute($this->context, $slug);
-
-      // move the abstracts
-      foreach ($this->context->find('abstract') as $abstract) {
-        if (file_exists(PATH.$abstract['@src'])) {
-          $old = PATH.$abstract['@src'];
-          $new = str_replace($id, $slug, $old);
-          rename($old, $new);
-        }
-      }
-
-
-      // find all edges with a vertex referencing old id and replace new id
-      $edges = Graph::instance()->query('/graph/group/vertex/')->find("edge[@vertex='{$id}']");
-
-      foreach ($edges as $edge) {
-        $edge->setAttribute('vertex', $slug);
-      }
-
-    }
   }
 }

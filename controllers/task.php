@@ -49,6 +49,22 @@ class Task extends \bloc\controller
     print_r($methods);
 
   }
+  
+  public function CLIbuildPhar()
+  {
+    $source = '../bloc';
+    $phar = new \Phar ('../bloc.phar');
+
+    $dir = new \RecursiveIteratorIterator (new \RecursiveDirectoryIterator ($source), \RecursiveIteratorIterator::SELF_FIRST);
+
+    foreach ($dir as $file) {
+      if (preg_match ('/.*\.php$/i', $file) ) {
+        $local = substr ($file, strlen ($source) + 1);
+        $content = php_strip_whitespace ($file);
+        $phar->addFromString ($local, $content);
+      } 
+    }
+  }
 
 
   public function CLIvalid()
@@ -217,8 +233,7 @@ class Task extends \bloc\controller
     if ($id !== null) {
 
       if (!array_key_exists($id, $list)) {
-        throw new \RuntimeException("No recommendations will be available", 25);
-
+        return (object) ['best' => []];
       }
       $A = $list[$id];
 
@@ -356,174 +371,39 @@ class Task extends \bloc\controller
       if ($count-- < 0) break;
     }
   }
-
-  protected function CLIresetDates($user)
-  {
-    $premiers = \models\Graph::group('feature')->find('vertex/premier[@date!=""]');
-    foreach ($premiers as $premier) {
-      $date = $premier->getAttribute('date');
-
-
-      if (strlen($date) == 4) {
-        $date = '01/01/'.$date;
-        echo "{$date}\n";
-      } else {
-        continue;
-      }
-
-      $date = (new \DateTime($date))->format('Y-m-d H:i:s');
-      $premier->setAttribute('date', $date);
-      echo "setting premier to {$date}\n";
-    }
-
-    \models\Graph::instance()->storage->save(PATH . \models\Graph::DB . '.xml');
+  
+  public function CLImigration() {
+    $migration = new \models\migration('data/tciaf2');
+    $migration->execute();
+    // $migration->compressEdges();
+    $migration->save('data/tciaf2');
   }
-
-  public function CLIsequencer($n = 100)
-  {
-    $count = \models\graph::instance()->query('/group/')->find('vertex[@id]')->count();
-    echo $count . "\n";
-    for ($i=0; $i < $n; $i+= 1) {
-      echo \models\graph::ALPHAID($i) . "\n";
-    }
+  
+  public function CLIslug($id) {
+    
+    $user = new \models\person($id);
+    $title = iconv('UTF-8', 'ASCII//TRANSLIT', $user->title);
+    $find = [
+      '/^[^a-z]*behind\W+the\W+scenes[^a-z]*with(.*)/i' => '$1-bts',
+      '/(re:?sound\s+#\s*[0-9]{1,4}:?\s*|best\s+of\s+the\s+best:\s*)/i' => '',
+      '/^the\s/i'    => '',
+      '/^\W+|\W+$/'  => '',
+      '/[^a-z\d\s]/i' => '',
+      '/\s+/' => '-',
+    ];
+    $key =  strtolower(preg_replace(array_keys($find), array_values($find), $title));
+    echo $key;
     
   }
   
-  public function CLIgenerateIndex($value='')
-  {
-    return;
-    $doc = new \bloc\DOM\Document('data/tciaf');
-    $db = new \DOMXpath($doc);
-    $idx = new \bloc\DOM\Document('data/index');
-    
-    $nodes = iterator_to_array($db->query('//group/vertex[@id]'));
-    
-    usort($nodes, function($a, $b) use($db){
-      return $db->query('edge', $a)->length < $db->query('edge', $b)->length;
-    });
+  public function CLIlookup($slug) {
 
-    foreach($nodes as $count => $node) {
-      $id = \models\graph::ALPHAID($count);
-      $slug = $node->getAttribute('id');
-      $key = $idx->documentElement->appendChild(new \DOMElement($id));
-      $key->setAttribute('k', $slug);
-      
-      foreach ($db->query("//vertex[@id='{$slug}']/@id|//edge[@vertex='{$slug}']/@vertex") as $attr) {
-        $attr->nodeValue = $id;
-      }
-      
-    }
-    $idx->save();
-    $doc->save(PATH. 'data/tciaf2.xml');
-    
-    
-  }
-  
-  public function CLIabstracts()
-  {
-    $doc = new \bloc\DOM\Document('data/tciaf2');
-    $db  = new \DOMXpath($doc);
-    foreach ($db->query('//abstract') as $abstract) {
-      $id      = $abstract->parentNode->getAttribute('id');
-      $content = strtolower($abstract->getAttribute('content') ?: 'extras');
-      $path    = $abstract->getAttribute('src');
-
-      if (! copy(PATH . $path, PATH . 'data/abstracts/' . $content . '/' . $id . '.html')) {
-        echo "did not save {$path}\n";
-      }
-      
-      $abstract->removeAttribute('src');
-      $abstract->setAttribute('content', $content);
-    }
-    
-    $doc->save();
-    
-  }
-  
-  public function CLIcompressedges()
-  {
-    $doc = new \bloc\DOM\Document('data/tciaf2');
-    $db  = new \DOMXpath($doc);
-    
-    foreach ($db->query('//group/vertex') as $vertex) {
-      $edges  = [];
-      $labels = [];
-      foreach ($db->query('edge', $vertex) as $idx => $edge) {
-        $type = $edge->getAttribute('type');
-        if (! array_key_exists($type, $edges)) {
-          $edges[$type] = [];
-          $labels[$type] = []; 
-        }
-        $edges[$type][] = $edge->getAttribute('vertex');
-        $labels[$type][] = $edge->nodeValue ?: null;
-        $edge->parentNode->removeChild($edge);
-      }
-      
-      foreach ($edges as $type => $ids) {
-        $v = $vertex->appendChild(new \DOMElement($type));
-        print_r($ids);
-        $v->setAttribute('v', implode(' ', $ids));
-        foreach (array_filter($labels[$type]) as $idx => $txt) {
-          $label = $v->appendChild(new \DOMElement('label', $txt));
-          $label->setAttribute('for', $idx);
-        }
+    foreach (new \SplFileObject(PATH . 'data/index.txt', 'r') as $line_num => $line) {
+      if (trim($line) == $slug) {
+        return \Models\Graph::ALPHAID($line_num);
       }
     }
-    $doc->save(PATH. 'data/tciaf3.xml');
-  }
-  
-  public function CLImoveAbstracts()
-  {
-    $doc = new \bloc\DOM\Document('data/tciaf3');
-    $db  = new \DOMXpath($doc);
     
-    foreach ($db->query('//group/vertex') as $vertex) {
-      $abstracts  = [];
-      
-      foreach ($db->query('abstract', $vertex) as $idx => $abstract) {
-        $abstracts[] = $abstract->getAttribute('content');
-        $abstract->parentNode->removeChild($abstract);
-      }
-      
-      $vertex->setAttribute('abstract', implode(' ', $abstracts));
-    }
-     $doc->save(PATH. 'data/tciaf4.xml');
-  }
-  
-  public function CLIcompressdates()
-  {
-    $doc = new \bloc\DOM\Document('data/tciaf4');
-    $db  = new \DOMXpath($doc);
-    
-    foreach ($db->query('//group/vertex') as $vertex) {
-      $vertex->setAttribute('created', base_convert(strtotime($vertex->getAttribute('created')),10,32));
-      $vertex->setAttribute('updated', base_convert(strtotime($vertex->getAttribute('created')),10,32));
-    }
-    
-    foreach ($db->query('//group/vertex/premier[@date]') as $premier) {
-      $premier->setAttribute('date', base_convert(strtotime($vertex->getAttribute('date')),10,32));
-    }
-    
-    $doc->save(PATH. 'data/tciaf5.xml');
-  }
-  
-  public function CLIrenameMediaElements()
-  {
-    $doc = new \bloc\DOM\Document('data/tciaf5');
-    $db  = new \DOMXpath($doc);
-    
-    foreach ($db->query('//group/vertex/media') as $media) {
-      $type = $media->getAttribute('type') == 'image' ? 'img' : $media->getAttribute('type');
-      $node = new \DOMElement($type);
-      $media = $media->parentNode->replaceChild($node, $media);
-      if ($media->nodeValue) {
-        $node->nodeValue = trim($media->nodeValue);
-      }
-      $node->setAttribute('src', $media->getAttribute('src'));
-      $node->setAttribute('mark', $media->getAttribute('mark'));
-      
-    }
-    $doc->save(PATH. 'data/tciaf6.xml');
   }
   
   protected function CLIbio($user)
@@ -558,6 +438,18 @@ class Task extends \bloc\controller
     }
 
     \models\Graph::instance()->storage->save(PATH . \models\Graph::DB . '.xml');
+  }
+  
+  public function GETfocus() {
+    $view = new \bloc\view('views/maintenance.html');
+    
+    $doc   = new \bloc\DOM\Document(\models\Graph::DB);
+    $xpath = new \DOMXpath($doc);
+    
+
+    $this->images = new \LimitIterator(new \bloc\DOM\iterator($xpath->query('//media[@type="image"]')), 300, 25);
+    $view->content = 'views/forms/media/images.html';
+    return $view->render($this());
   }
   
 }

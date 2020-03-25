@@ -27,7 +27,7 @@ class Explore extends Manage
       $alpha = null;
       if (strtolower(substr($filter, 0, 5)) == 'alpha') {
         $alpha = substr($filter, 6, 1);
-        $query = "[starts-with(@title, '{$alpha}')]";
+        $query = "[starts-with(@key, '{$alpha}')]";
       }
       $this->alphabet = (new Dictionary(range('A', 'Z')))->map(function($letter) use($alpha) {
         $map = ['letter' => $letter];
@@ -58,19 +58,27 @@ class Explore extends Manage
 
   public function GETdetail($id)
   {
-
-    $this->item = Graph::FACTORY(Graph::ID($id));
+    if (! $id instanceof \DOMElement) {
+      $id = Graph::ID($id);
+    }
+    $this->item = Graph::FACTORY($id);
     $this->title  = strip_tags($this->item['title']);
 
     $view = new view('views/layout.html');
-    $view->content = "views/digests/{$this->item->template('digest')}.html";
+    $digest = ($this->item->_model == 'competition') ? '' : '/digests';
+    $view->content = "views{$digest}/{$this->item->template('digest')}.html";
     return $view->render($this());
   }
+  
+  
+  public function GETlookup($type, $slug) {
+    return $this->GETdetail(Graph::group($type)->find("vertex[@key='{$slug}']")->pick(0));
+  }
+  
+  public function GETkey($slug) {
+    return $this->GETdetail(Graph::instance()->query('graph/group/')->find("vertex[@key='{$slug}']")->pick(0));
+  }
 
-  public function GETperson($id)     { return $this->GETdetail($id); }
-  public function GETfeature($id)    { return $this->GETdetail($id); }
-  public function GETcollection($id) { return $this->GETdetail($id); }
-  public function GETarticle($id)    { return $this->GETdetail($id); }
 
   public function GETbehindTheScenes($sort = 'newest', $index = 1, $per = 25)
   {
@@ -105,9 +113,11 @@ class Explore extends Manage
 
   public function GETshoppe()
   {
+    // this is to make sure nobody goes to the shoppe while it is decommissioned.
+    \bloc\router::redirect("/");
     $view = new View('views/layout.html');
     $view->content = 'views/lists/shoppe.html';
-    $this->item  = new \models\Article('shoppe');
+    $this->item  = new \models\Article('BlH');
     return $view->render($this());
   }
 

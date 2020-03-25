@@ -91,13 +91,10 @@
       </ul>
     </address>
     <ul class="caps-lock plain low-contrast h6">
-      <li><a href="/overview/events">Events</a></li>
-      <li><a href="/overview/tciaf">About</a></li>
       <li><a href="/overview/people">Producer Index</a></li>
-      <li><a href="/overview/subscribe">Subscribe</a></li>
       <li><a href="/overview/opportunities">Jobs &amp; Internships</a></li>
       <li><a href="/overview/playlists">Playlists</a></li>
-      <li><a href="/explore/shoppe">Shoppe</a></li>
+      <!-- <li><a href="/explore/shoppe">Shoppe</a></li> -->
       <li><a href="/explore/behindthescenes">Behind-the-Scenes Interviews</a></li>
       <li><a href="https://www.thefestchicago.org">The Fest</a></li>
     </ul>
@@ -121,7 +118,7 @@
       <li style="width:35%;align-self:center;padding-right:3em;font-size:150%;font-weight:400;">Thank you to the following foundations for their major support of the Third Coast Festival.</li>
       <!-- iterate supporters -->
       <li>
-        <a href="[$organization:location]"><img data-src="[//s3.amazonaws.com/$organization:photo:url]" alt="[$organization:@title]" /></a>
+        <a href="[$organization:location:@ref]" class="show" aria-label="[Visit $organization:@title]"><img data-src="[//s3.amazonaws.com/$organization:photo:url]" alt="[$organization:@title]" /></a>
       </li>
     </ul>
   </nav>
@@ -137,12 +134,21 @@
           } else {
             img.addEventListener('load', function () {
               if (this.classList.contains('proxy')) {
-                this.parentNode.style.backgroundImage = `url(${this.src})`;
+                var context = this.parentNode;
+                var prefix = context.style.backgroundImage;
+                if (prefix) {
+                  prefix += ', ';
+                }
+    
+                context.style.backgroundImage = prefix + `url(${this.src})`;
+                setTimeout(DOMTokenList.prototype.add.bind(context.classList, 'loaded'), 10);
+    
                 this.remove();
               } else {
                 this.removeAttribute('data-src');
               }
             });
+            
             img.src = img.dataset.src;
           }
         });

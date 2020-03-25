@@ -23,14 +23,7 @@ namespace models;
 
     static public $fixture = [
       'vertex' => [
-        'abstract' => [
-          [
-            'CDATA' => '',
-            '@' => [
-              'content' => 'about'
-            ]
-          ]
-        ]
+        '@' => ['text' => 'about']
       ]
     ];
 
@@ -69,7 +62,7 @@ namespace models;
 
     public function getPermalink(\DOMElement $context)
     {
-      return "/overview/competition/{$context['@id']}";
+      return "/competition/{$context['@key']}";
     }
     
     public function getCompetitions()

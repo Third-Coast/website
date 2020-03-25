@@ -53,7 +53,7 @@ function calendar($start, $category, $query)
       $this->{$group}  = "selected";
 
       $queries = [
-        'shows' => 'edge[@vertex="TCIAF"]',
+        'shows' => 'edge[@vertex="A"]',
         'conference-audio' => 'edge[@type="session"]',
         'shortdocs' => 'edge[@type="participant"]',
         'awards' => 'edge[@type="award"]',
@@ -87,7 +87,7 @@ function calendar($start, $category, $query)
       if ($sort == 'alpha-numeric') {
         // show the picker
         $alpha = strtolower(substr($group, 6, 1));
-        $query .= " and starts-with(@id, '{$alpha}')";
+        $query .= " and starts-with(@key, '{$alpha}')";
         $this->alphabet = alphabet($alpha, $filter);
         $view->picker = "views/partials/alpha-numeric.html";
       }
@@ -169,7 +169,7 @@ function calendar($start, $category, $query)
 
       if ($filter != 'any') {
         $alpha = strtolower(substr($filter, 6, 1));
-        $query .= "and starts-with(@id, '{$alpha}')";
+        $query .= "and starts-with(@key, '{$alpha}')";
       }
 
       $this->alphabet = alphabet($alpha, $category);
@@ -195,7 +195,14 @@ function calendar($start, $category, $query)
     {
       $view = new view('views/layout.html');
       $view->content = 'views/pages/about.html';
-      $this->item  = new \models\Organization('TCIAF');
+
+      $this->item  = new \models\Organization('A');
+      
+      if (true) {
+        \bloc\application::instance()->log($this->item->content->extras);
+        // $view->presenters =  "views/partials/presenters.html";
+      }
+      
       return $view->render($this());
     }
 
@@ -203,52 +210,76 @@ function calendar($start, $category, $query)
     {
       $view = new view('views/layout.html');
       $view->content   = 'views/pages/overview.html';
-      $this->item      = Graph::FACTORY(Graph::ID('opportunities'));
+      $this->item      = Graph::FACTORY(Graph::ID('BlN'));
       return $view->render($this());
     }
 
-    public function GETconference($id = null)
+    public function GETconference($id = null, $schedule = false)
     {
       $this->banner = 'Conferences';
-      $this->item   = Graph::FACTORY(Graph::ID($id ?: 'tciaf-conference'));
+      $node = $id ? Graph::group('happening')->find("vertex[@key='{$id}']")->pick(0) : GRAPH::ID('CJ');
+      $this->item   = Graph::FACTORY($node);
+      $sections = [];
 
-      $template = $id === null ? 'overview' : $this->item->_template;
-
+      $template = $id === null ? 'overview' : ( $schedule ? 'schedule' : $this->item->_template);
+      
       $view = new View('views/layout.html');
       $view->content = "views/conference/{$template}.html";
 
       // Sessions, Presenters and Sponsers only show up when available
       
       if ($this->item->sessions->count() > 0) {
-        $view->sessions = 'views/partials/sessions.html';
-
+        // $view->schedule = 'views/conference/schedule.html';
       }
-
-      if ($this->item->presenters) {
+      
+      if ($this->item->presenters->count() > 0) {
+        $this->pkey = 'presenters';
+        $sections[] = ['id' => 'presenters', 'title' => 'Featured People'];
         $view->presenters =  "views/partials/presenters.html";
       }
 
       if ($this->item->sponsors) {
         $view->sponsors =  "views/partials/sponsors.html";
       }
+      $this->sections = $sections;
+      return $view->render($this());
+    }
+    
+    public function GETresidency($id = null) {
+      $node = $id ? Graph::group('happening')->find("vertex[@key='{$id}']")->pick(0) : GRAPH::ID('BpW');
+      
+      $this->item   = Graph::FACTORY($node);
 
+      $template = $id === null ? 'overview' : $this->item->_template;
+      
+      $view = new View('views/layout.html');
+      $view->content = "views/residency/{$template}.html";
+      
+      if ($this->item->sponsors) {
+        $view->sponsors =  "views/partials/sponsors.html";
+      }
+      
       return $view->render($this());
     }
 
     public function GETcompetition($id = null, $participants = false)
     {
       $view = new view('views/layout.html');
+      $group = Graph::group('competition');
+      
       if ($id === null) {
         $this->banner = 'Competitions';
+        
+
         $this->competitions = [
-          ['item' => new \models\competition(Graph::group('competition')->pick('vertex[@sticky="driehaus"]'))],
-          ['item' => new \models\competition(Graph::group('competition')->pick('vertex[@sticky="shortdocs"]'))],
+          ['item' => new \models\competition($group->pick('vertex[@sticky="driehaus"]'))],
+          ['item' => new \models\competition($group->pick('vertex[@sticky="shortdocs"]'))],
         ];
+
         $view->content = "views/competition/overview.html";
       } else {
-        $this->item = Graph::FACTORY(Graph::ID($id));
-
-
+        
+        $this->item = Graph::Factory($group->find("vertex[@key='{$id}']")->pick(0));
 
         if ($participants) {
           $page = 'competition/listing';

@@ -44,6 +44,10 @@ function goto(url, evt) {
       console.log(res, res.getElementById('vertex').value);
       this.modal.close();
       var exist = document.querySelector('main');
+      evt.target.responseXML.querySelectorAll('body script[async]').forEach(function (script) {
+        eval(script.text);
+      });
+      
       new Request({
         load: function (evt) {
           exist.parentNode.replaceChild(evt.target.responseXML.querySelector('main'), exist);
@@ -130,7 +134,7 @@ Markdown.prototype = {
     link   : {
       format: '<var>[</var>Link Text<var>](</var>url<var>)</var>',
       insert: function (message, begin, end) {
-        var url = window.prompt("Please insert a link", "http://");
+        var url = window.prompt("Please insert a link", "http://").replace(/https?:\/\/.*thirdcoastfestival.org/, '');
 
         if (url === null) {
           return string;
@@ -668,18 +672,16 @@ function duplicateTextbox(evt) {
   var clone    = divs.item(0).cloneNode(true),
       index    = Math.floor(Date.now()/-1e8),
       label    = clone.querySelector('label'),
-      input    = clone.querySelector('input[type=hidden]'),
-      textarea = clone.querySelector('textarea');
+  textarea = clone.querySelector('textarea');
 
   label.textContent = 'Extras';
-  label.for = label.getAttribute('for').replace(/[0-9]+/, index);
+  label.for = label.for = 'abstract-extra';
 
-  input.value = 'Extras';
-  input.name = input.name.replace(/[0-9]+/, index);
 
   textarea.value = '';
   textarea.placeholder = 'Enter extra information';
-  textarea.name = textarea.name.replace(/[0-9]+/, index);
+  textarea.id   = 'abstract-extras'
+  textarea.name = textarea.name.replace(/\[[a-z]+\]$/, '[extras]');
 
   evt.target.parentNode.insertBefore(clone, evt.target);
   return false;

@@ -1,15 +1,22 @@
 <article class="form">
   <span class="h3" style="padding:2em 0;display:block;"><strong>[$action]</strong> <a href="[$item:permalink]">[$item:title]</a></span>
-  <form action="[/manage/edit/$item:_model/$item:@id]" method="POST" class="editor" oninput="this.classList.add('modified')">
+  <form action="[/manage/edit/$item:_model/$item:@id]" method="POST" class="editor" oninput="this.classList.add('modified')" accept-charset="UTF-8">
     <!-- insert views/forms/partials/receipt.html -->
     <section class="help">[$item:help:overview:markdown]</section>
     <!-- insert  views/forms/fieldset/title-description.html -->
     <fieldset class="extra group float-left">
       <legend>Details</legend>
       <label for="premier_date" data-help="[$item:help:premier:plain]">[$item:_premier]</label>
-      <input type="text" name="vertex[premier][@][date]" value="[$item:premier:@date]" id="premier_date" class="required text" />
+      <input type="datetime-local" name="vertex[premier][@][date]" value="[$item:premier:@date]" id="premier_date" class="required text" onchange="this.nextElementSibling.nextElementSibling.setAttribute('min', this.value);"/>
+      <label for="premier_duration" data-help="[$item:help:duration:plain]">End time (if applicable)</label>
+      <input type="datetime-local" name="vertex[premier][@][duration]" value="[$item:premier:@duration]" min="[$item:premier:@date]" id="premier_duration" class="required text"/>
       <label for="location" data-help="[$item:help:location:plain]">[$item:_location]</label>
-      <input type="text" name="vertex[location][@][ref]" value="[$item:location:@ref]" id="location" class="required text" />
+      <input type="text" name="vertex[location][@][ref]" value="[$item:location:@ref]" id="location" class="required text"/>
+      
+      <input type="checkbox" name="vertex[@][mark]" value="hide" checked="[$item:mark]" id="mark" class="required" />
+      <label for="mark">[$item:_mark]</label>
+      
+      
     </fieldset>
     <!--  replace upload nextSibling -->
     <!-- insert views/forms/fieldset/media/image.html -->

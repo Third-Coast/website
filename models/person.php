@@ -14,18 +14,24 @@ class Person extends Vertex  implements \bloc\types\authentication
 
   static public $fixture = [
     'vertex' => [
-      'abstract' => [
-        [
-          'CDATA'  => '',
-          '@' => ['content' => 'bio']
-        ]
-      ]
+      '@' => ['text' => 'bio']
     ]
   ];
 
   static public function N2ID($name)
   {
-    return strtolower(preg_replace('/\W/', '-', $name));
+    setlocale(LC_ALL, "en_US.utf8");
+    $name = iconv('UTF-8', 'ASCII//TRANSLIT', $name);
+    $find = [
+      '/^[^a-z]*behind\W+the\W+scenes[^a-z]*with(.*)/i' => '$1-bts',
+      '/(re:?sound\s+#\s*[0-9]{1,4}:?\s*|best\s+of\s+the\s+best:\s*)/i' => '',
+      '/^the\s/i'    => '',
+      '/^\W+|\W+$/'  => '',
+      '/[^a-z\d\s]/i' => '',
+      '/\s+/' => '-',
+      '/\-([ntscwmd]\-)/' => "$1",
+    ];
+    return strtolower(preg_replace(array_keys($find), array_values($find), $name));
   }
 
   protected $edges = [

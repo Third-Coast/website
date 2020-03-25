@@ -5,18 +5,26 @@
   }
   #sponsors a {
     padding:1em;
-    display:inline-block;
-    margin:2.5%;
+    display:block;
+    margin:0 0.5em 0.5em;
     border:1px solid rgba(0,0,0,0.1);
     padding:15% 0;
   }
+  #sponsors div.center h6 { line-height: 1; text-transform: uppercase;font-size:1.5em;letter-spacing: 0.125em;font-weight:400;padding:0.5em 0;}
+  #sponsors div[data-group~='support'] {
+    max-width: 33%;
+  }
+  #sponsors div[data-group~='support'] h6 {
+    color: rgba(0,0,0,0.5);
+    font-size: 50%;
+  }
   </style>
-  <h4 class="brown caps-lock strong">Sponsors</h4>
+  <h4 class="brown caps-lock strong">Supported by</h4>
   <!-- iterate item:sponsors -->
-  <div class="center">
-    <h6 class="caps-lock t rag-left r gray">[$group:name]</h6>
+  <div class="center" data-group="[$group:name]">
+    <h6 class="t">[$group:name]</h6>
     <!-- iterate group:items -->
-    <a class="white-bg" vocab="http://schema.org/" typeof="Organization" href="[$item:location]">
+    <a class="white-bg" vocab="http://schema.org/" typeof="Organization" href="[$item:location:@ref]">
       <img src="[//s3.amazonaws.com/$item:photo:url]" alt="[$item:@title]" />
     </a>
   </div>

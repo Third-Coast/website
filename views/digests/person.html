@@ -30,10 +30,10 @@
   }
   </style>
   <section class="panel flip">
-    <figure class="one-third gallery">
+    <figure class="one-third gallery ll">
       <img data-src="[//s3.amazonaws.com/$item:photo:url]" alt="[$item:photo:caption]"/>
     </figure>
-    <div class="two-thirds">
+    <div class="two-thirds rr">
       <h1 class="strong lead display tracked tt b" data-id="[$item:@id]">[$item:title]</h1>
       <div style="font-size:125%;">[$item:content:bio]</div>
     </div>
@@ -44,7 +44,7 @@
     <div>
       <!-- iterate items -->
       <article data-updated="[$item:@updated]" class="listing pad">
-        <a class="award" href="[/overview/competition/$item:award:competition:@id]" property="award">[$item:award:html]</a>
+        <a class="award h4" href="[/competition/$item:award:competition:@key]" property="award">[$item:award:html]</a>
         <div class="panel">
           <div class="controls">
             <!-- iterate item:media:audio -->
