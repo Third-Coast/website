@@ -235,7 +235,7 @@ function calendar($start, $category, $query)
           // $view->schedule = 'views/conference/schedule.html';
         }
       
-        if ($this->item->presenters->count() > 0) {
+        if ($this->item->presenters && $this->item->presenters->count() > 0) {
           $this->pkey = 'presenters';
           $sections[] = ['id' => 'presenters', 'title' => 'Featured People'];
           $view->presenters =  "views/partials/presenters.html";
