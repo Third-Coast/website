@@ -26,11 +26,11 @@
     }
   </style>
   
-  <header class="panel"  style="align-items:center;">
-    <h1 class="lead tracked display b tt pad-h" data-id="[$item:@id]">[$item:title]</h1>
-    <figure class="one-third ll">
-      <img data-src="[//s3.amazonaws.com/$item:photo:url]" alt="[$item:@title banner]" style="max-width:100%;" class="b"/>
-    </figure>
+  <header id="overview">
+    <div class="banner banner-bg"  data-aspect="[$item:banner:mark]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
+      <h1 class="lead tracked display strong t" data-id="[$item:@id]">[$item:title]</h1>
+      <p>[$item:summary]</p>
+    </div>
   </header>
   
   
@@ -42,6 +42,15 @@
     </div>
     
     <section class="one-third ll">
+      
+      <nav class="pad jump white-bg">
+        <ul class="plain playlist h4">
+          <!-- iterate item:articles -->
+          <li><a href="[#$item:@id]">[$item:title]</a></li>
+          <!-- iterate sections -->
+          <li><a href="[#$id]">[$title]</a></li>
+        </ul>
+      </nav>
       
       <form method="GET" class="spot">
         <h5 class="brown caps-lock strong">[$item:origin:title by year]</h5>

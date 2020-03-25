@@ -11,14 +11,16 @@
     <h1 class="lead display tracked tt b" data-id="[$item:@id]">[$item:title]</h1>
     <section class="panel flip">
       <div class="ll one-third">
+        
         <form method="GET" class="spot">
           <h5 class="brown caps-lock strong">[$item:title by year]</h5>
           <select onchange="navigateToPage.call({href: this.value}, event);">
             <option>Select Year</option>
             <!-- iterate item:conferences -->
-            <option value="[/overview/conference/$edition:@id]">[$edition:year]</option>
+            <option value="[/conference/$edition:@key]">[$edition:year]</option>
           </select>
         </form>
+        
         <!-- iterate item:upcoming -->
         <a class="banner-bg pad b upcoming" href="[$item:permalink]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
           <h4><time>[$item:date]</time></h4>
