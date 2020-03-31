@@ -48,7 +48,7 @@ body {
 .brown, .markdown h3, .markdown h4 { color:#77635c; }
 .white-bg, body, .gallery img, button { background-color:#fff }
 .gray {color: #979797;}
-.gray-bg {background-color: rgba(0,0,0,0.05);color: #706F73;border: 1px solid rgba(0,0,0,0.1);}
+.gray-bg {background-color: rgba(0,0,0,0.05);color: #706F73;}
 .brown-bg { color:#EEE; background-color:rgb(119, 99, 92) }
 .brown-bg a {color: #EEE;}
 .orange, .display strong, a:focus {color:#FC6202;}
@@ -64,8 +64,8 @@ p a {text-decoration:underline;}
 p, .p {max-width:55em;font-weight:400;}
 h1, h2 {max-width: 75vw;font-weight:400;}
 
-h1, .h1 {font-size: calc(1.25em + 1.5vmax);line-height:1.25;margin:0;}
-h2, .h2 {font-size: calc(1.25em + 1.35vmax);line-height: 1.25;}
+h1, .h1 {font-size: calc(1.25em + 1.35vmax);line-height:1.25;margin:0;}
+h2, .h2 {font-size: calc(1.25em + 1vmax);line-height: 1.25;}
 h3, .h3 {font-size: 200%;line-height: 1.2;margin: 0.5em 0;font-weight: 400;}
 h4, .h4, .markdown h3, article nav  ul.plain li > a  {font-size: calc(1.25em + 0.25vmax);font-weight:300;}
 h5, .h5, p, .p, li, label, input {font-size: calc(1.075em + 0.35vmax);line-height: 1.4;}
@@ -711,7 +711,7 @@ input:focus::--webkit-input-placeholder { opacity:0.2;}
   .bio.read {width: 15em;margin-right:1vmin;}
   .listing:not(:first-of-type), .search li:not(:first-of-type) { border-top:2px solid #EEE;}
   button, .button {border:1px solid #5b9b98; color: #5b9b98;}
-  .columns {column-gap:1em;}
+  .columns {column-gap:0.25em;}
   .columns.three{column-count:3;}
   .columns.four{column-count:3;}
   
@@ -724,7 +724,8 @@ input:focus::--webkit-input-placeholder { opacity:0.2;}
   .half          {width:50%   }
   .one-third     {width:30%;}
   .one-third.l   {width: calc(30% - 1vw)}
-  .one-third.ll  {width: calc(30% - 2vw)}
+  .one-third.ll  {width: calc(30% - 2vw);}
+  .conference .one-third.ll {background-color:#fafafa;}
   .two-thirds    {width:70%;}
   .two-thirds.r  {width:calc(70% - 1vw);}
   .two-thirds.rr {width:calc(70% - 2vw);}
@@ -734,8 +735,8 @@ input:focus::--webkit-input-placeholder { opacity:0.2;}
   nav[role] > ul {display: flex;}
   nav[role] > ul > li {background-color:#fff }
   
-  .feature article.panel.listing header, .competition article.panel.listing header, .conference article.panel.listing header { width:48% }
-  .feature article.panel.listing ul { width:30% }
+  .feature article.panel.listing header, .competition article.panel.listing header, .conference article.panel.listing header { width:50% }
+  .feature article.panel.listing ul { width:25% }
   .bg { 
     width:20%;
     margin:0;
