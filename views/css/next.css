@@ -216,7 +216,7 @@ header > img.landscape {
   position: relative;
 }
 .path {flex-wrap:wrap;justify-content: flex-start;}
-.display, .markdown h2 { font-family: 'Source Serif Pro', Baskerville,  Didot, 'Times New Roman', Serif; font-weight:600; line-height: 1;}
+.display, .markdown h2, aside.extra a { font-family: 'Source Serif Pro', Baskerville,  Didot, 'Times New Roman', Serif; font-weight:600; line-height: 1;}
 
 .panel, .triptych {display:flex;}
 .sink {flex: 1 0 10vw;}

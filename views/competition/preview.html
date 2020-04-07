@@ -4,6 +4,25 @@
     img[title="enter"], img[title~="support"] {
       max-width: 30%;
     }
+    aside.extra a {
+      font-size:300%;
+      padding:0.25em;
+      display:block;
+      text-align:center;
+      font-weight:800;
+      text-decoration:none;
+      color:#FC6202;
+      background-image: linear-gradient(#FC6202 1em, transparent 100%);
+      background-size:85% 3px;
+      background-position: 50% 95%;
+      background-repeat:no-repeat;
+      transition: background-size 0.25s;
+    }
+    aside.extra a:hover {
+      
+      background-size:100% 3px;
+      color:#333;
+    }
     /* ]]> */
   </style>
   
@@ -35,7 +54,7 @@
       </nav>
       
       <div class="gray-bg spot markdown">
-        <aside>[$item:content:extras]</aside>
+        <aside class="extra">[$item:content:extras]</aside>
       </div>
       
       <!-- replace judges -->
