@@ -4,21 +4,6 @@
     img[title="enter"], img[title~="support"] {
       max-width: 30%;
     }
-    aside.extra a {
-      font-size:250%;
-      padding:10% 0.25em;
-      display:block;
-      text-align:center;
-      text-decoration:none;
-      color:#fff;
-      text-transform:uppercase;
-      background-color: #FC6202;
-      border-radius: 0.65em;
-      line-height:1;
-    }
-    aside.extra a:hover {
-      background-color:#665851;
-    }
     /* ]]> */
   </style>
   
@@ -47,11 +32,11 @@
           <!-- iterate sections -->
           <li><a href="[#$id]">[$title]</a></li>
         </ul>
+        <div class="spot markdown">
+          <aside class="extra">[$item:content:extras]</aside>
+        </div>
       </nav>
       
-      <div class="spot markdown">
-        <aside class="extra">[$item:content:extras]</aside>
-      </div>
       
       <!-- replace judges -->
       <!-- replace sponsors -->

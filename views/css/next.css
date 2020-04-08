@@ -337,6 +337,23 @@ header nav[role] > ul a {
 
 }
 
+aside.extra a {
+  font-size:250%;
+  padding:10% 0.25em;
+  display:block;
+  text-align:center;
+  text-decoration:none;
+  color:#fff;
+  text-transform:uppercase;
+  background-color: #FC6202;
+  border-radius: 0.65em;
+  line-height:1;
+}
+aside.extra a:hover {
+  background-color:#665851;
+}
+
+
 a.jump {
   display:block;
   text-transform:lowercase;
