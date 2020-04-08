@@ -338,8 +338,8 @@ header nav[role] > ul a {
 }
 
 aside.extra a {
-  font-size:250%;
-  padding:10% 0.25em;
+  font-size:150%;
+  padding:1em 0.25em;
   display:block;
   text-align:center;
   text-decoration:none;
