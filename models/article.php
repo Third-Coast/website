@@ -49,6 +49,30 @@ class Article extends Vertex
     });
   }
   
+  public function getContent(\DOMElement $context)
+  {
+    $content = parent::getContent($context);
+    $object    = \bloc\dom\document::ELEM("<div>{$content['description']}</div>");
+    // turn H6 elements into disclosure widgets
+    $document = $object->ownerDocument;
+    foreach ($document->getElementsByTagName('h6') as $mark) {
+      //
+      $details = $document->createElement('details');
+      $mark = $mark->parentNode->replaceChild($details, $mark);
+      $summary = $details->appendChild(new \DOMElement('summary'));
+      $summary->appendChild($mark);
+      $sibling = $details->nextSibling;
+      while($sibling && $sibling->nodeName[0] != 'h') {
+        $next = $sibling->nextSibling;
+        $details->appendChild($sibling);
+        $sibling = $next;
+      }
+    }
+    $content['description'] = $document->saveXML($object);
+    
+    return $content;
+  }
+  
   public function getSections(\DOMElement $context) 
   {
     // 'sectionize' text on h2 elements.

@@ -103,9 +103,9 @@ abstract class Vertex extends \bloc\Model
 
     return $abstracts->map(function($type, $idx) use($parse, $context){
 
-			$path = trim(PATH . "data/text/{$type}/{$context['@id']}.html");
+      $path = trim(PATH . "data/text/{$type}/{$context['@id']}.html");
 
-			$content = file_exists($path) ? file_get_contents($path) : null;
+      $content = file_exists($path) ? file_get_contents($path) : null;
 
       $text = $parse && $context['@mark'] != 'html' ? (new \vendor\Parseup($content))->output() : ($parse ? htmlentities($content) : $content);
     
@@ -119,8 +119,8 @@ abstract class Vertex extends \bloc\Model
 
   public function getSummary(\DOMElement $context)
   {
-		$abstract = $this->getAbstract($context, false);
-		if (!is_object($abstract)) return;
+    $abstract = $this->getAbstract($context, false);
+    if (!is_object($abstract)) return;
     if ($node = \bloc\DOM\Document::ELEM("<root>{$abstract->current()['text']}</root>")) {
       if ($node->childNodes->length > 0) {
         $len = strlen($node->firstChild->nodeName) + 2;
@@ -137,8 +137,8 @@ abstract class Vertex extends \bloc\Model
 
   public function getBody(\DOMElement $context)
   {
-		$abstract = $this->getAbstract($context, false);
-		if (!is_object($abstract)) return;
+    $abstract = $this->getAbstract($context, false);
+    if (!is_object($abstract)) return;
     /*
       TODO should return first paragraph, not first element
     */
@@ -262,12 +262,12 @@ abstract class Vertex extends \bloc\Model
 
   protected function getContent($context)
   {
-		$dict = [];
+    $dict = [];
 
-		foreach ($this->getAbstract($context, false) as $abstract) {
-			$dict[$abstract['type']] = $abstract['text'];
+    foreach ($this->getAbstract($context, false) as $abstract) {
+      $dict[$abstract['type']] = $abstract['text'];
     }
-		return new \bloc\types\Dictionary($dict);
+    return new \bloc\types\Dictionary($dict);
   }
 
   public function getEdges($context)
