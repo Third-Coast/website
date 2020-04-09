@@ -72,7 +72,7 @@ h5, .h5, p, .p, li, label, input {font-size: calc(1.075em + 0.35vmax);line-heigh
 h5 {font-weight:400}
 h6, .h6, form button, form .button {font-size:calc(1.125em + 0.35vw); font-weight: 600;}
 
-article.page h2 {margin:1em 0 0.5em;}
+article.text h2 {margin:1em 0 0.5em;}
 details[open] summary {color:#FC6202;}
 details p {border-left: 1px solid #eee;padding-left:1em;margin-left:0.75em;}
 summary h6 { display:inline;font-size:100%;}
