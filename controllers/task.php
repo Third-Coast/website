@@ -452,5 +452,25 @@ class Task extends \bloc\controller
     return $view->render($this());
   }
   
+  
+  public function CLIsprite()
+  {
+    $images = \models\Graph::group('person')->find('vertex/media');
+    $assets = [];
+    chdir(realpath(__DIR__ . '/..'));
+    $thumbs = glob('data/media/thumbs/*');
+    foreach ($thumbs as $idx => $image) {
+      $assets[] = [
+        'path' => $image,
+        'idx' => $idx,
+      ];
+    }
+
+    
+    $sprites = \bloc\sprite::update(100, [40,25], $assets);
+
+    echo sqrt($images->count());
+  }
+  
 }
 

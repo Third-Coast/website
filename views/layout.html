@@ -32,7 +32,7 @@
           <li><a href="/overview/events">News &amp; Events</a></li>
           <!-- <li><a href="/explore/shoppe">Shoppe</a></li> -->
           <li><a href="/overview/tciaf">About</a></li>
-          <li  class="special"><a href="https://donatenow.networkforgood.org/ThirdCoast">Donate</a></li>
+          <!-- <li  class="special"><a href="https://donatenow.networkforgood.org/ThirdCoast">Donate</a></li> -->
         </ul>
       </nav>
       
@@ -43,8 +43,33 @@
       </section>
       
     </header>
-    
     <section id="browse" class="column">
+      <div class="campaign">
+        <style type="text/css">
+          div.campaign {
+            background: #000 url('/images/campaign.jpg');
+            background-size:cover;
+            color:#fff;
+            padding:10vmin 5vmin;
+            display:flex;
+            box-shadow: inset 0 0 1em 2em rgba(0,0,0,0.25);
+            
+          }
+          div.campaign button {
+            font-size:2em;
+            flex-basis:30%;
+            margin:0 1em;
+            color: #000;
+            font-weight:500;
+            border:3px double #CCC;
+            border-radius:0.5em;
+            background: radial-gradient(#fff 20%, #EEE);
+            box-shadow: 0 0 1em 1em rgba(0,0,0,0.25);
+          }
+        </style>
+        <p>Please support third coast, Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        <button>Give now</button>
+      </div>
       <main>
         <!-- replace content nextSibling -->
         <section class="landing">
@@ -186,7 +211,7 @@
     <script type="text/javascript">
       // <![CDATA[
         // mind, month is n-1 as Jan is 0 
-        if (new Date(2018, 3, 16) > new Date() && (document.cookie.split(' ').map(c => c.split('=')).find(a => a[0] == "S")||[false,';']).pop().slice(0,-1) != '1') {
+        if (new Date(2010, 5, 16) > new Date() && (document.cookie.split(' ').map(c => c.split('=')).find(a => a[0] == "S")||[false,';']).pop().slice(0,-1) != '1') {
           var splash = document.body.appendChild(document.createElement('div'));
           splash.appendChild(document.createElement('span')).textContent = '✕ Click background to close';
 
