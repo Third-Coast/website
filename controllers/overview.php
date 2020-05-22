@@ -198,11 +198,6 @@ function calendar($start, $category, $query)
 
       $this->item  = new \models\Organization('A');
       
-      if (true) {
-        \bloc\application::instance()->log($this->item->content->extras);
-        // $view->presenters =  "views/partials/presenters.html";
-      }
-      
       return $view->render($this());
     }
 
@@ -343,14 +338,6 @@ function calendar($start, $category, $query)
     {
       $view = new view('views/layout.html');
       $view->content = 'views/pages/subscribe.html';
-      return $view->render($this());
-    }
-    
-    
-    public function GETplayer()
-    {
-      $view = new view('views/layout.html');
-      $view->content = 'views/pages/test.html';
       return $view->render($this());
     }
     

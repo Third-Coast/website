@@ -292,6 +292,7 @@ body:not(.menu) button.menu-trigger svg path:last-of-type {
   z-index:1;
   margin-top: 6em;
 }
+
 .triptych {justify-content:space-between;flex-wrap:wrap;}
 .triptych > * {
   background-color: #fff;
@@ -320,9 +321,7 @@ nav a.logo {
   background-position: 40% 70%;
   height: 6em;
   width: calc(6em * 2.75);
-  
 }
-
 
 nav[role] > ul {
   flex-wrap:wrap;
@@ -355,10 +354,10 @@ aside.extra a {
   border-radius: 0.65em;
   line-height:1;
 }
+
 aside.extra a:hover {
   background-color:#665851;
 }
-
 
 a.jump {
   display:block;

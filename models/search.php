@@ -90,8 +90,6 @@ namespace models;
         return $this->format($this->index[strtolower($subset)]);
       }
 
-
-
       return $this->index;
     }
 
@@ -103,7 +101,6 @@ namespace models;
         }
         return $a[0] - $b[0];
       });
-
 
       return array_map(function($k, $v) {
         return [$k, $v[1]];
