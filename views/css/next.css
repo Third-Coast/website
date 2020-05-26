@@ -1,3 +1,6 @@
+:root {
+  --aqua-bg: #46817c;
+}
 * { box-sizing:border-box }
 body, ul, ol, form, h2, h3, h4, h5, h6, figure, blockquote { margin:0; }
 body[data-status='offline']  header {border-color:#fb6868;}
