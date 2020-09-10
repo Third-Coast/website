@@ -1,22 +1,36 @@
-<article>
-	<header>
-		<h3 class="brown tracked caps-lock bb">Playlists</h3>
-		<nav>
-	    <!-- insert views/partials/navigator.html -->
-	  </nav>
-	</header>
-	<!-- iterate list -->
+<article class="collection page">
+  <header>
+    <h1 class="lead display tracked tt b">Playlists</h1>
+    <nav>
+      <div class="filter panel">
+        <h6 class="strong orange">[($paginate:total)]</h6>
+        <ul class="plain path h5">
+          <li><a href="/overview/library/all/">All</a></li>
+          <li><a href="/overview/library/stories/">Stories</a></li>
+          <li><a href="/overview/library/shows/">Re:sound</a></li>
+          <li><a href="/overview/library/conference-audio/">Conf Sessions</a></li>
+          <li><a href="/overview/library/shortdocs/">ShortDocs</a></li>
+          <li><a href="/overview/library/awards/">Winners</a></li>
+          <li><a class="selected" href="/overview/playlists">Playlists</a></li>
+        </ul>
+      </div>
+    </nav>
+    
+    
+  </header>
+  <!-- iterate list -->
   <article data-created="[$item:@created]" data-updated="[$item:@updated]" class="panel listing pad">
-		<header class="two-thirds container">
+    <header class="two-thirds container">
       <img data-src="[//s3.amazonaws.com/$item:photo:url]"/>
       <h2 class="display tracked t"><a href="[$item:permalink]" data-id="[$item:@id]">[$item:title]</a></h2>
       <p>[$item:summary]</p>
-		</header>
-		<ul class="plain h5 pad sink container">
-			<li>[$item:size:length Tracks]</li>
-			<li>[$item:size:duration Hours]</li>
-			<!-- iterate item:curators -->
-			<li><a href="[$person:permalink]" data-id="[$person:@id]">[$person:@title]</a></li>
-		</ul>
+    </header>
+    <ul class="plain h5 pad sink container">
+      <li>[$item:size:length Tracks]</li>
+      <li>[$item:size:duration Hours]</li>
+      <!-- iterate item:curators -->
+      <li><a href="[$person:permalink]" data-id="[$person:@id]">[$person:@title]</a></li>
+    </ul>
   </article>
+  <!-- insert views/partials/navigator.html -->
 </article>
