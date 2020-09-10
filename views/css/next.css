@@ -691,8 +691,8 @@ input:focus::--webkit-input-placeholder { opacity:0.2;}
   
   body > header {
     flex-direction: row-reverse;
-    border-top: 0.5em solid #5b9c99;
-    border-bottom: 1px dashed #EEE;
+    position: fixed;
+    /* border-bottom: 1px dashed #EEE; */
   }
   #browse, body > header > nav {
     width: 85vw;
@@ -708,15 +708,15 @@ input:focus::--webkit-input-placeholder { opacity:0.2;}
   #media {
     height: 100vh;
     right: 0;
-    top: 0;
+    top: 6.5em;
     position: fixed;
   }
 
   button.menu-trigger { display: none;}
   
   body[data-position^='0'] #media {
-    padding-top: 7.5em;
-    top: 0.5em;
+    /* padding-top: 7.5em; */
+    /* top: 0.5em; */
   }
   
   section.listing div.markdown :first-child {

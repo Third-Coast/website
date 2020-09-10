@@ -68,8 +68,8 @@ class Article extends Vertex
         $sibling = $next;
       }
     }
-    $content['description'] = $document->saveXML($object);
     
+    $content['description'] = $document->saveXML($object);
     return $content;
   }
   
@@ -77,7 +77,8 @@ class Article extends Vertex
   {
     // 'sectionize' text on h2 elements.
     $object    = \bloc\dom\document::ELEM("<div>{$this->content->description}</div>");
-    $current   = $object->firstChild;
+    $current   = $object->firstChild->firstChild;
+
     $out = [];
     while ($current) {
       if ($current->nodeName == 'h2') {
@@ -88,6 +89,7 @@ class Article extends Vertex
       }
       
       $current = $current->nextSibling;
+
     }
     
     

@@ -52,7 +52,7 @@
     @media screen and (min-width: 50em) {
       #browse > footer .aqua-bg { padding: 6em 1em }
       footer > div.aqua-bg     { flex-flow: row }
-      footer > div.aqua-bg div { transform: translateY(-4.5em) }
+      footer > div.aqua-bg div { transform: translateY(-3.5em) }
       nav.sponsors img {
         height: 5.5vw;
       }
@@ -78,20 +78,28 @@
 
     /* ]]> */
   </style>
+  <nav class="sponsors" style="background-color: #fff; color:#888;border-top:1px solid #eee;padding:4em 0 4em 4em;">
+    <ul class="plain panel">
+      <li class="rag-left" style="width:25%;align-self:center;padding-right:2em;font-size:calc(0.75em + 0.5vw);font-weight:400;">Thank you to the following foundations for their major support of Third Coast.</li>
+      <!-- iterate supporters -->
+      <li>
+        <a href="[$organization:location:@ref]" class="show" aria-label="[Visit $organization:@title]"><img data-src="[//s3.amazonaws.com/$organization:photo:url]" alt="[$organization:@title]" /></a>
+      </li>
+    </ul>
+  </nav>
+  
   <div class="aqua-bg">
     <address class="p">
       <span class="display">Third Coast International Audio Festival</span>
-      <span>Navy Pier</span>
-      <span>848 East Grand</span>
-      <span>Chicago, Illinois 60611-3509</span>
+      <span>Chicago, Illinois</span>
       <small style="margin-top:0.5em;padding-top:0.25em;border-top: 1px solid rgba(255,255,255,0.2); display: block;color:rgba(255,255,255,0.8);"><time datetime="[$timestamp:wc3]">[© $timestamp:year]</time> <a href="/overview/policy" style="padding-left: 0.5em; margin-left: 0.5em; border-left: 1px solid rgba(255,255,255,0.1)">Terms &amp; Conditions</a></small>
       <ul class="plain t">
-        <li><a data-before="phone" href="tel:312-948-4682">(312) 948-4682</a></li>
         <li><a data-before="email" href="mailto:info@thirdcoastfestival.org">info@thirdcoastfestival.org</a></li>
       </ul>
     </address>
     <ul class="caps-lock plain low-contrast h6">
       <li><a href="/overview/people">Producer Index</a></li>
+      <li><a href="/competition/#CB">ShortDocs</a></li>
       <li><a href="/overview/opportunities">Jobs &amp; Internships</a></li>
       <li><a href="/overview/playlists">Playlists</a></li>
       <!-- <li><a href="/explore/shoppe">Shoppe</a></li> -->
@@ -104,8 +112,7 @@
       <a href="https://donatenow.networkforgood.org/ThirdCoast" class="button low-contrast caps-lock h5">Donate Now</a>
     </div>
     <div>
-      <h3 class="display">Connect</h3>
-      <nav class="social b">
+      <nav class="social b" style="margin-top:2em;">
         <a title="facebook" style="background-position:-1.5em -5.5em; width: 2em;" href="https://www.facebook.com/thirdcoastfest?ref=ts">Facebook</a>
         <a title="twitter" style="background-position:-0.75em 0; width:3.5em;" href="https://twitter.com/ThirdCoastFest">Twitter</a>
         <a title="instagram" style="background-position:-1em -11.35em; width: 3em;" href="https://instagram.com/thirdcoastfest/">Instagram</a>
@@ -113,15 +120,6 @@
       <a href="https://app.e2ma.net/app2/audience/signup/1400701/1400216/" class="button low-contrast caps-lock h5">Third Coast Newsletter</a>
     </div>
   </div>
-  <nav class="sponsors" style="background-color: #fff; color:#888;padding:4em 0 4em 4em;">
-    <ul class="plain panel">
-      <li class="rag-left" style="width:25%;align-self:center;padding-right:2em;font-size:calc(0.75em + 0.5vw);font-weight:400;">Thank you to the following foundations for their major support of Third Coast.</li>
-      <!-- iterate supporters -->
-      <li>
-        <a href="[$organization:location:@ref]" class="show" aria-label="[Visit $organization:@title]"><img data-src="[//s3.amazonaws.com/$organization:photo:url]" alt="[$organization:@title]" /></a>
-      </li>
-    </ul>
-  </nav>
   <script type="text/javascript" async="true">
     // <![CDATA[
 
