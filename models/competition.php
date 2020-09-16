@@ -82,10 +82,29 @@ namespace models;
     public function getJudges(\DOMElement $context)
     {
       $judges = $context->find("edge[@type='judge']");
-
       return $judges->count() < 1 ? null : $judges->map(function($edge) {
-        return ['person' => new Person($edge['@vertex'])];
+        return ['person' => new Person($edge['@vertex']), 'title' => $edge->nodeValue];
       });
+    }
+    
+    public function getCategories()
+    {
+      $groups = [];
+      foreach ($this->judges as $judge) {
+        $key = $judge['title'];
+
+        if (! array_key_exists($key, $groups)) {
+
+           $groups[$key] = [
+             'title' => $key,
+             'people' => [],
+           ]; 
+        }
+        
+        $groups[$key]['people'][] = $judge;
+      }
+      
+      return $groups;
     }
 
     public function getAwards(\DOMElement $context)

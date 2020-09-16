@@ -1,0 +1,20 @@
+<article class="tt" id="[$pkey]">
+  <h2 class="display tt bb">Judges</h2>
+  <!-- iterate item:categories -->
+  <section class="pad t" style="border: 1px solid #eee">
+    <h3>[$title]</h3>
+    <!-- iterate people -->
+    <div vocab="http://schema.org/" typeof="Person" class="listing panel card pad" data-id="[$person:@id]" id="[$person:@id]">
+      <a href="[$person:permalink]" property="name">
+        <figure class="bio read center">
+          <span>
+            <img data-src="[//s3.amazonaws.com/$person:photo:url]" alt="[$person:photo:caption]" class="proxy"/>
+          </span>
+          <figcaption class="h5">[$person:@title]</figcaption>
+        </figure>
+      </a>
+      <p class="pad-h">[$person:summary]</p>
+    </div>
+  </section>
+  
+</article>

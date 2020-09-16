@@ -291,7 +291,12 @@ function calendar($start, $category, $query)
         $view->content = "views/{$page}.html";
 
         if ($this->item->judges) {
-          $view->judges = 'views/partials/judges.html';
+          if ($page == 'competition/edition') {
+            $view->judges = 'views/partials/judges.html';
+          } else {
+            $view->judges = 'views/partials/categorical-judges.html';
+          }
+          
         }
 
         if ($this->item->sponsors) {
