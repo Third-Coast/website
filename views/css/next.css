@@ -89,14 +89,14 @@ summary {cursor: pointer;outline:none;padding:0.5em;}
 
 .t, .markdown > h2 {margin-top: calc(0.5em + 1vmax);}
 .tt,hr, .hr {margin-top: calc(0.5em + 1.5vmax);}
-.b   {margin-bottom: calc(0.5em + 1vmax);}
+.b   {margin-bottom: calc(0.25em + 0.25vmax);}
 .bb, hr, .hr {margin-bottom: calc(0.5em + 1.5vmax);}
 .l  {margin-left:1vw}
 .ll, .controls h1, .controls h2 {margin-left:2vw}
 .r {margin-right:1vw;}
 .rr {margin-right: 2vw;}
 .pad   {padding: 1.5vmax;}
-.pad-h { padding: 0 1.5vmin }
+.pad-h {padding: 0 2.5vmin;}
 .pad-v {padding: 2vmin 0;}
 .m, p {margin: 0.75em 0;}
 
@@ -376,12 +376,9 @@ a.jump:before {
 }
 
 nav.jump {
-  position: -moz-sticky;
-  position: -webkit-sticky;
   position: sticky;
   top: 4rem;
   margin: 0 0 2em 0;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .image-tab {
@@ -732,7 +729,7 @@ input:focus::--webkit-input-placeholder { opacity:0.2;}
   }
   
   .flip {flex-direction:row-reverse;justify-content: flex-end;}
-  .card p {flex: 1 0 50%;align-self: center;}
+  .card p {flex: 1 0 50%;align-self: center;max-width: 60ch;}
   .bio.read {width: 15em;margin-right:1vmin;}
   .listing:not(:first-of-type), .search li:not(:first-of-type) { border-top:2px solid #EEE;}
   button, .button {border:1px solid #5b9b98; color: #5b9b98;}
@@ -861,7 +858,7 @@ button.listen {
   font-variant: all-small-caps;
   text-indent: -0.5em;
 }
-.playlist li:first-of-type {
+.playlist li:first-of-type, .playlist li:last-of-type {
   border:none;
 }
 .playlist li { padding: 0.5em 1em; }
