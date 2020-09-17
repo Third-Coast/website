@@ -1,6 +1,10 @@
+
 :root {
   --aqua-bg: #46817c;
+  --condensed: 'Avenir Next Condensed';
 }
+
+
 * { box-sizing:border-box }
 body, ul, ol, form, h2, h3, h4, h5, h6, figure, blockquote { margin:0; }
 body[data-status='offline']  header {border-color:#fb6868;}
@@ -39,7 +43,7 @@ button:focus, input:focus {
 }
 
 body {
-  font: normal normal 400 62.5%/1.35 'Source Sans Pro', 'Franklin Gothic Book', 'Avenir Next', Verdana, sans-serif;
+  font: normal normal 400 62.5%/1.35 'Avenir Next', Verdana, sans-serif;
   background: url(//tciaf-media.s3.amazonaws.com/image/_assets/birds-background-B.png) repeat-y 100% 100% fixed, url(//tciaf-media.s3.amazonaws.com/image/_assets/birds-background-A.png) repeat-y fixed;
   background-size:100%, 100%;
   background-position:100% 100%, 100% 100%;
@@ -66,13 +70,13 @@ a:hover {color:#5a9a98;}
 p a {text-decoration:underline;}
 p, .p {max-width:55em;font-weight:400;}
 h1, h2 {max-width: 75vw;font-weight:400;}
-
+h1, h2, h3, h4 {font-family: dapifer;}
 h1, .h1 {font-size: calc(1.25em + 1.35vmax);line-height:1.25;margin:0;}
 h2, .h2 {font-size: calc(1.25em + 1vmax);line-height: 1.25;}
 h3, .h3 {font-size: 200%;line-height: 1.2;margin: 0.5em 0;font-weight: 400;}
 h4, .h4, .markdown h3, article nav  ul.plain li > a, summary  {font-size: calc(1.25em + 0.25vmax);font-weight:300;}
 h5, .h5, p, .p, li, label, input {font-size: calc(1.075em + 0.35vmax);line-height: 1.4;}
-h5 {font-weight:400}
+h5 {font-weight:400; font-family: var(--condensed);}
 h6, .h6, form button, form .button {font-size:calc(1.125em + 0.35vw); font-weight: 600;}
 
 article.text h2 {margin:1em 0 0.5em;}
@@ -117,13 +121,13 @@ summary {cursor: pointer;outline:none;padding:0.5em;}
 .close {height:2em;width:2em;line-height:0;padding:0.5em;}
 
 address { font-style: normal; }
-strong, .strong, .selected, .markdown h4 {font-weight:600;}
+strong, .strong, .selected {font-weight:600;}
 input, select {font-size: inherit }
 em, .em, blockquote {font-style:italic }
 ul { list-style-type: square; }
 ul, ol { padding:0 0 0 2em }
 
-.tracked {letter-spacing:-0.025em}
+.tracked {letter-spacing: -0.025em;}
 .display  strong {display:block;font-size:0.5em;text-transform:uppercase;margin:0.5em 0;font-weight:200;}
 
 
@@ -225,7 +229,7 @@ header > img.landscape {
   position: relative;
 }
 .path {flex-wrap:wrap;justify-content: flex-start;}
-.display, .markdown h2 { font-family: 'Source Serif Pro', Baskerville,  Didot, 'Times New Roman', Serif; font-weight:600; line-height: 1;}
+.display, .markdown h2 {font-family: dapifer;font-weight: 400;line-height: 1;}
 
 .panel, .triptych {display:flex;}
 .sink {flex: 1 0 10vw;}
@@ -850,7 +854,7 @@ button.listen {
 
 .bg button.listen { box-shadow: 0 0 2.5em rgba(0,0,0,0.1); }
 
-.playlist {max-height: 72.5vh;overflow-y:scroll;--webkit-overflow-scrolling: touch;}
+.playlist {max-height: 72.5vh;overflow-y:scroll;--webkit-overflow-scrolling: touch;font-family: var(--condensed);}
 .playlist li {
   padding: 0.5em 0.5em 0.5em 1em;
   border-top: 1px solid rgba(0,0,0,0.05);

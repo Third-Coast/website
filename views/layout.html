@@ -21,14 +21,14 @@
       
       <nav role="navigation" class="panel">
         <a href="/" class="logo" title="Go to the Third Coast Homepage">Home</a>
-        <ul class="plain caps-lock h5 rag-left">
-          
+        <link rel="stylesheet" href="https://use.typekit.net/ikj1fkr.css"/>
+        <ul class="plain h5 rag-left">
+          <li class="unique"><a href="https://audiofestival.org">Third Place</a></li>
           <li><a href="/competition/2020-third-coast-richard-h-driehaus-foundation-competition">Competition</a></li>
           <li><a href="/conference/2020-third-coast-conference">Conference</a></li>
           <li><a href="/residency/">Residency</a></li>
           <li><a href="/overview/library">Listen</a></li>
           <!-- <li><a href="/overview/playlists">Playlists</a></li> -->
-          <!-- <li><a href="https://www.thefestchicago.org">The Fest</a></li> -->
           <!-- <li><a href="/overview/events">News &amp; Events</a></li> -->
           <!-- <li><a href="/explore/shoppe">Shoppe</a></li> -->
           <li><a href="/overview/tciaf">Who We Are</a></li>
@@ -47,6 +47,15 @@
     <section id="browse" class="column">
       <div class="campaign wrap panel pad">
         <style type="text/css">
+          nav ul.plain li.unique a{
+            font-family: dapifer;
+            color:#4f52a5;
+            font-style: italic;
+            background: url(/images/brush-stroke.svg) no-repeat;
+            font-weight:800;
+            background-size: 100% 50%;
+            background-position: 50% 135%;
+          }
           div.campaign {
             background-color:var(--aqua-bg);
             color:#fff;
@@ -86,6 +95,21 @@
             </div>
           </div>
           <article>
+            <!-- iterate collection:articles -->
+            <ul class="plain seven">
+              <li style="color:#5b9c99;">
+                <h2 class="h1 display lead pad" data-id="[$article:@id]">[$article:title]</h2>
+                <p class="pad-h">Catch up on the latest news and events</p>
+              </li>
+              <!-- iterate article:sections -->
+              <li>
+                <h3 class="display tracked">[$title]</h3>
+                <div class="markdown">[$content]</div>
+              </li>
+            </ul>
+          </article>
+          <hr style="margin-top:1vh;margin-bottom:1vh;"/>
+          <article>
             <ul class="plain seven">
               <li style="color:#5b9c99;">
                 <h4 class="h1 display lead pad"><span style="font-size:125%">Listen</span></h4>
@@ -106,21 +130,6 @@
                   <!-- iterate item:producers -->
                   <li><a href="[$person:permalink]" data-id="[$person:@id]">[$person:@title]</a></li>
                 </ul>
-              </li>
-            </ul>
-          </article>
-          <hr style="margin-top:1vh;margin-bottom:1vh;"/>
-          <article>
-            <!-- iterate collection:articles -->
-            <ul class="plain seven">
-              <li style="color:#5b9c99;">
-                <h2 class="h1 display lead pad" data-id="[$article:@id]">[$article:title]</h2>
-                <p class="pad-h">Catch up on the latest news and events</p>
-              </li>
-              <!-- iterate article:sections -->
-              <li>
-                <h3 class="display tracked h4">[$title]</h3>
-                <div class="markdown">[$content]</div>
               </li>
             </ul>
           </article>

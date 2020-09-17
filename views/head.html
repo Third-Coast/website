@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-title" content="Third Coast International Audio Festival" />
   <meta name="description" content="Sound-rich audio stories from around the world, galore!" />
   <link rel="icon" type="image/png" href="/images/pidgey.png" />
-  <link rel="stylesheet" media="screen" type="text/css" href="/css/next.css?v1.8" />
+  <link rel="stylesheet" media="screen" type="text/css" href="/css/next.css?v1.9" />
   <script type="text/javascript">
     // <![CDATA[
     (function(exports, s, c, p1, p2) {
@@ -48,19 +48,13 @@
     var mobile = (/mobile|iPhone/i).test(navigator.userAgent),
       dataLayer = [{
         'start': Date.now()
-      }],
-      WebFontConfig = {
-        google: {
-          families: ['Source+Sans+Pro:400,300,600,700,400italic', 'Source+Serif+Pro']
-        }
-      };
+      }];
 
     document.documentElement.classList.add(mobile ? 'touch' : 'desktop');
     // Embed script for site
     bloc.require('/js/bloc.js')
 
     // Lastly, fonts and analytics
-    bloc.require('//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js', true);
     bloc.require('//www.google-analytics.com/analytics.js', true);
 
     window.GoogleAnalyticsObject = 'ga';
