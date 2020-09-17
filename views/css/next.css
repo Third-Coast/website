@@ -528,10 +528,6 @@ form[method="GET"] select {
   font-size:1.25em;
   color: rgba(0,0,0,0.65);
 }
-article.page {
-  margin: 0 auto;
-  max-width: 125em;
-}
 
 .one-third {
   width: 100%;
