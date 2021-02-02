@@ -331,12 +331,12 @@ class Parseup
      private function convert_emphasis($tag, $value)
      {
         if ($tag == 'i' || $tag == 'em') {
-            $markdown = $this->options['italic_style'] . trim($value) . $this->options['italic_style'];
+            $markdown = $this->options['italic_style'] . $value . $this->options['italic_style'];
         } else {
-            $markdown = $this->options['bold_style'] . trim($value) . $this->options['bold_style'];
+            $markdown = $this->options['bold_style'] . $value . $this->options['bold_style'];
         }
 
-        return ' ' . $markdown . ' ';
+        return $markdown;
      }
 
 
@@ -382,7 +382,7 @@ class Parseup
     {
         $href = $node->getAttribute('href');
         $title = $node->getAttribute('title');
-        $text = trim($node->nodeValue);
+        $text = $node->nodeValue;
 
         if ($title != "") {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
