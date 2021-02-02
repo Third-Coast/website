@@ -382,7 +382,7 @@ class Parseup
     {
         $href = $node->getAttribute('href');
         $title = $node->getAttribute('title');
-        $text = $node->nodeValue;
+        $text = trim($node->nodeValue);
 
         if ($title != "") {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
