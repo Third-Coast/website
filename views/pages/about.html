@@ -34,65 +34,46 @@
 
     <nav class="one-third l">
       <div class="gray-bg spot">
-        <h4 class="brown b">Staff</h4>
+        <h4 class="brown b">Current Staff</h4>
         <ul class="staff plain">
           <!-- iterate item:staff:current -->
-          <li>
+          <li style="break-inside:avoid;">
             <em>[$position]</em>
             <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
           </li>
         </ul>
       </div>
+      
       
       <div class="gray-bg spot">
-        <h4 class="brown b">Community Advisory Group</h4>
-        <ul class="staff plain">
-          <!-- iterate item:board:community -->
-          <li>
-            <em>[$position]</em>
-            <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
-          </li>
-        </ul>
-      </div>
-      
-      
-      
-      <div class="gray-bg spot" style="display:none">
-        <h4 class="brown b">Staff Emeritae</h4>
+        <h4 class="brown b">Staff Emeritus &amp; Co-Founders</h4>
         <ul class="staff plain">
           <!-- iterate item:staff:emeritus -->
-          <li>
+          <li style="break-inside:avoid;">
             <em>[$position]</em>
             <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
           </li>
         </ul>
+        <hr style="margin:0.5em"/>
+        <em>Co-Founders</em>
+        <ul class="staff plain">
+          <!-- iterate item:staff:cofounder -->
+          <li style="break-inside:avoid;">
+            <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
+          </li>
+        </ul>
       </div>
-      
-      
-      
       <div class="gray-bg spot">
         <h4 class="brown b">Board of Directors</h4>
         <ul class="staff plain">
         <!-- iterate item:board:directors -->
-          <li>
+          <li style="break-inside:avoid;">
             <em>[$position]</em>
             <h5 data-id="[$person:@id]">[$person:title]</h5>
           </li>
         </ul>
       </div>
-      
-      <div class="gray-bg spot">
-        <h4 class="brown b">Co-Founders</h4>
-        <ul class="staff plain">
-          <!-- iterate item:staff:cofounder -->
-          <li>
-            <em>[$position]</em>
-            <h5 data-id="[$person:@id]"><a href="[$person:permalink]">[$person:title]</a></h5>
-          </li>
-        </ul>
-      </div>
-      
-      <div class="gray-bg spot markdown">[$item:content:extras]</div>
+      <!-- <div class="gray-bg spot markdown">[$item:content:extras]</div> -->
     </nav>
   </section>
 </article>
