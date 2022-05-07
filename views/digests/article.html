@@ -1,8 +1,5 @@
 <article class="text page">
   <header>
-    <nav class="caps-lock">
-  		<a href="/explore/behindthescenes">Behind the Scenes</a> / <span class="selected">[$item:suffix]</span>
-  	</nav>
     <div class="panel tt">
       <h1 class="display lead strong two-thirds" data-id="[$item:@id]">[$item:title]</h1>
       <figure class="gallery one-third ll">
@@ -23,6 +20,14 @@
           </li>
         </ul>
         
+        <script type="text/javascript">
+          // <![CDATA[
+            let spot = document.querySelector('ul.spot');
+            if (spot.children.length < 1) {
+              spot.style.display = 'none';
+            }
+          // ]]>
+        </script>
         
         <ul class="plain featurette">
           <!-- iterate item:features -->
