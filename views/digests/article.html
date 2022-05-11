@@ -20,12 +20,15 @@
           </li>
         </ul>
         
-        <script type="text/javascript">
+        <script type="text/javascript" async="true">
           // <![CDATA[
-            let spot = document.querySelector('ul.spot');
-            if (spot.children.length < 1) {
-              spot.style.display = 'none';
-            }
+            bloc.init(() => {
+              let spot = document.querySelector('ul.spot');
+
+              if (spot.children.length < 1) {
+                spot.style.display = 'none';
+              }
+            });
           // ]]>
         </script>
         

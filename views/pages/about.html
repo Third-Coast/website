@@ -10,6 +10,14 @@
     ul.staff em:empty {
       display:none;
     }
+    .board li:not([data-position=""]) + li[data-position=''] {
+      break-inside: initial !important;
+    }
+    .board li:not([data-position=""]) + li[data-position='']:before {
+      content: '';
+      height: 3em;
+      display:block;
+    }
     /* ]]> */
   </style>
 
@@ -43,8 +51,6 @@
           </li>
         </ul>
       </div>
-      
-      
       <div class="gray-bg spot">
         <h4 class="brown b">Staff Emeritus &amp; Co-Founders</h4>
         <ul class="staff plain">
@@ -65,9 +71,9 @@
       </div>
       <div class="gray-bg spot">
         <h4 class="brown b">Board of Directors</h4>
-        <ul class="staff plain">
-        <!-- iterate item:board:directors -->
-          <li style="break-inside:avoid;">
+        <ul class="staff plain board">
+          <!-- iterate item:board:directors -->
+          <li style="break-inside:avoid;" data-position="[$position]">
             <em>[$position]</em>
             <h5 data-id="[$person:@id]">[$person:title]</h5>
           </li>
