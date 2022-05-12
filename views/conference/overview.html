@@ -7,30 +7,32 @@
         box-shadow:0 0 5em rgba(0,0,0,0.05);
       }
   </style>
-  <header class="b">
-    <h1 class="lead display tracked tt b" data-id="[$item:@id]">[$item:title]</h1>
-    <section class="panel flip">
-      <div class="ll one-third">
-        
-        <form method="GET" class="spot">
-          <h5 class="brown caps-lock strong">[$item:title by year]</h5>
-          <select onchange="navigateToPage.call({href: this.value}, event);">
-            <option>Select Year</option>
-            <!-- iterate item:conferences -->
-            <option value="[/conference/$edition:@key]">[$edition:year]</option>
-          </select>
-        </form>
-        
-        <!-- iterate item:upcoming -->
-        
-        <a class="banner-bg pad b upcoming" href="[$item:permalink]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
-          <h4><time>[$item:date]</time></h4>
-          <h2 class="display">[$item:title]</h2>
-          <h3>Learn More</h3>
-        </a>
-        
-      </div>
-      <section property="description" class="two-thirds pad">[$item:content:about]</section>
-    </section>
+  <header id="overview">
+    <div class="banner banner-bg"  data-aspect="[$item:banner:mark]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
+      <h1 class="lead tracked display strong t" data-id="[$item:@id]">[$item:title]</h1>
+    </div>
   </header>
+  <section class="panel flip">
+    <div class="ll one-third">
+      
+      <form method="GET" class="spot">
+        <h5 class="brown caps-lock strong">[$item:title by year]</h5>
+        <select onchange="navigateToPage.call({href: this.value}, event);">
+          <option>Select Year</option>
+          <!-- iterate item:conferences -->
+          <option value="[/conference/$edition:@key]">[$edition:year]</option>
+        </select>
+      </form>
+      
+      <!-- iterate item:upcoming -->
+      
+      <a class="banner-bg pad b upcoming" href="[$item:permalink]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
+        <h4><time>[$item:date]</time></h4>
+        <h2 class="display">[$item:title]</h2>
+        <h3>Learn More</h3>
+      </a>
+      
+    </div>
+    <section property="description" class="two-thirds pad">[$item:content:about]</section>
+  </section>
 </article>

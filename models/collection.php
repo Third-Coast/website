@@ -60,7 +60,7 @@ namespace models;
     
     public function getSeven(\DOMElement $context)
     {
-      return $this->features->limit(1, 7);
+      return $this->features->limit(1, 15);
     }
 
     public function getArticles(\DOMElement $context)
