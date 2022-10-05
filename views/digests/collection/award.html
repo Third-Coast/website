@@ -1,0 +1,31 @@
+<article class="feature collection page">
+  <div class="wrap panel">
+    <div class="two-thirds rr tt">
+      <h1 class="display lead strong two-thirds" data-id="[$item:@id]">[$item:title]</h1>
+      <section class="markdown">[$item:content:about]</section>
+    </div>
+    <aside class="one-third ll">
+      <div class="markdown">
+        <aside class="extra">[$item:content:extras]</aside>
+      </div>
+      <!-- replace TOC -->
+      <!-- replace links -->
+    </aside>
+  </div>
+  <section class="tt pad gray-bg">
+    <h2>Past Recipients</h2>
+    <!-- iterate item:features -->
+    <article id="[goto-$item:@id]" data-created="[$item:@created]" data-type="[$item:types]" data-updated="[$item:@updated]" data-award="[$item:award:title]" vocab="http://schema.org/" typeof="CreativeWork" class="feature panel listing pad-v card">
+      <div  class="bg">
+        <img data-src="[$item:image:domain/$item:image:url]" alt="[$item:image:caption]" class="proxy"/>
+        <!-- iterate item:media:audio -->
+        <!-- insert views/partials/play-button.html-->
+      </div>
+      <header class="t">
+        <h2 class="display"><a href="[$item:permalink]" data-id="[$item:@id]"><strong>[$item:year]</strong><span>[$item:title]</span></a></h2>
+        <h6 class="t">[$caption]</h6>
+        <p>[$item:summary]</p>
+      </header>
+    </article>
+  </section>
+</article>

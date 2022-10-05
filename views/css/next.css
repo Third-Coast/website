@@ -88,7 +88,7 @@ summary {cursor: pointer;outline:none;padding:0.5em;}
 .plain    {list-style:none;padding:0;}
 .plain li {font-size:100%; line-height:1.125;}
 
-.t, .markdown > h2 {margin-top: calc(0.5em + 1vmax);}
+.t, .markdown h2 {margin: calc(0.5em + 1vmax) 0 0.25em;}
 .tt,hr, .hr {margin-top: calc(0.5em + 1.5vmax);}
 .b   {margin-bottom: calc(0.25em + 0.25vmax);}
 .bb, hr, .hr {margin-bottom: calc(0.5em + 1.5vmax);}
@@ -126,7 +126,7 @@ strong, .strong, .selected {font-weight:600;}
 input, select {font-size: inherit }
 em, .em, blockquote {font-style:italic }
 ul { list-style-type: square; }
-ul, ol { padding:0 0 0 2em }
+ul, ol { padding:0 0 0 2em; margin: 0.75em 0;}
 
 .tracked {letter-spacing: -0.025em;}
 .display  strong {display:block;font-size:0.5em;text-transform:uppercase;margin:0.5em 0;font-weight:200;}
@@ -349,8 +349,11 @@ header nav[role] > ul a {
   padding: 0.5em;
 
 }
-
-aside.extra a {
+aside.extra {
+  border-bottom: 1px solid #eee;
+  margin: 0 0 2em;
+}
+aside.extra li a {
   font-size:150%;
   padding:1em 0.25em;
   display:block;
@@ -363,7 +366,7 @@ aside.extra a {
   line-height:1;
 }
 
-aside.extra a:hover {
+aside.extra li a:hover {
   background-color:#665851;
 }
 
@@ -379,7 +382,8 @@ a.jump:before {
 nav.jump {
   position: sticky;
   top: 4rem;
-  margin: 0 0 2em 0;
+  margin: 4em 0;
+  box-shadow: 0 -1em 1em #ffffff;
 }
 
 .image-tab {
@@ -652,7 +656,7 @@ input:focus::--webkit-input-placeholder { opacity:0.2;}
   }
   
   body:not(.menu) .playlist {
-    display: none;
+/*    display: none;*/
   }
   
   #Player .controls {
@@ -821,7 +825,6 @@ pre.console {
   padding: 2em;
   overflow: auto;
   font-size: 1.5em;
-  display: none;
 }
 
 
@@ -850,7 +853,7 @@ button.listen {
 
 .playlist {max-height: 72.5vh;overflow-y:scroll;--webkit-overflow-scrolling: touch;font-family: var(--condensed);}
 .playlist li {
-  padding: 0.5em 0.5em 0.5em 1em;
+  padding: 0 0.25em 0.25em;
   border-top: 1px solid rgba(0,0,0,0.05);
   line-height: 0.75;
   color: #555;
@@ -859,10 +862,10 @@ button.listen {
   font-variant: all-small-caps;
   text-indent: -0.5em;
 }
-.playlist li:first-of-type, .playlist li:last-of-type {
+.playlist li:first-of-type {
   border:none;
 }
-.playlist li { padding: 0.5em 1em; }
+.playlist.plain li { padding: 0.15em 0.75em 0.35em; }
 .playlist li.current:before { content: '\25B6\FE0E'; margin-right:0.5em; }
 .playlist li.current {
   border-left-color: #88746a;
@@ -871,6 +874,10 @@ button.listen {
 
 .playlist li > span {pointer-events:none;}
 li.played {color:#BBB;border-left-color: rgb(230, 230, 230);}
+
+li span.ins {
+  display: none;
+}
 
 #Player .controls button {
   border: none;
@@ -1036,6 +1043,30 @@ button.error { background-color: #ED1C24 }
   stroke-width:1 !important;
   stroke-opacity: 0
 }
+
+
+
+.target, :target {
+  background-color: yellow;
+  box-shadow: 0 0 0 0.5em yellow;
+  animation: fade 1.5s ease 3s 1 normal forwards;
+}
+
+
+
+@keyframes fade {
+  from {
+    box-shadow: 0 0 0 0.5em yellow;
+    background-color: yellow;
+  }
+
+  to {
+    box-shadow: 0 0 0 0 transparent;
+    background-color: #fff;
+  }
+}
+
+
 
 /* images encoded w/ https://jakearchibald.github.io/svgomg/ */
 div[data-award], .award { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><path fill="%23333;" d="M200.9 193.17l46.13 66.44L433.46 0 304.7.3"/><path fill="%23444" d="M304.75 178.87L247.5 259.6 64.23 0 193 .3"/><path fill="%23DED7B8" d="M321.7 423.58l9.4 29.04-29.15-9.02-.04 30.5-24.93-17.58-9.47 29-18.28-24.42-17.97 24.66-9.84-28.9-24.7 17.92-.43-30.52-29.03 9.4 9.02-29.16-30.52-.04 17.6-24.94-29.02-9.47 24.44-18.28-24.67-17.97 28.88-9.84-17.9-24.7 30.52-.44-9.4-29.03 29.16 9 .04-30.5 24.94 17.6 9.47-29.02 18.3 24.43 17.96-24.65 9.83 28.9 24.7-17.92.43 30.52 29.04-9.4-9.02 29.16 30.5.05-17.58 24.94 29 9.46-24.43 18.28 24.67 17.97-28.88 9.85 17.9 24.7"/></svg>');}

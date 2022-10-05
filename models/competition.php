@@ -119,5 +119,13 @@ namespace models;
         return $out;
       });
     }
+    
+    
+    
+
+    public function getPages(\DOMElement $context) {
+      $pages = $this->groupByTitle($context, 'page');
+      return $pages;
+    }
 
   }

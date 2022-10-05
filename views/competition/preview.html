@@ -15,42 +15,39 @@
   </header>
   <article class="panel">
     <div class="two-thirds pad">
-      <section class="markdown">[$item:content:about]</section>
-      <!-- iterate item:articles -->
-      <article class="tt" id="[$item:@id]">
-        <h2 class="display" data-id="[$item:@id]">[$item:title]</h2>
-        <section class="markdown">[$item:content:description]</section>
-      </article>
+      <section class="markdown">[$item:content:about_chop]</section>
       <!-- replace judges -->
     </div>
     <section class="one-third ll">
+      
       <img data-src="[//s3.amazonaws.com/$item:square:url]" alt="[$item:@title banner]" style="max-width:100%;"/>
-
+      
+      <div class="markdown">
+        <aside class="extra">[$item:content:extras]</aside>
+      </div>
+      
+      
+        <!-- insert views/partials/TOC.html -->
+        
+        
+        
+      
+      
       <nav class="jump white-bg">
-        <ul class="plain playlist h4">
-          <!-- iterate item:articles -->
-          <li><a href="[#$item:@id]">[$item:title]</a></li>
-          <!-- iterate sections -->
-          <li><a href="[#$id]">[$title]</a></li>
-        </ul>
-        <div class="markdown">
-          <aside class="extra">[$item:content:extras]</aside>
+        
+        
+        <!-- iterate item:pages -->
+        <div id="[$group:id]">
+          <h3 style="margin:1em 0 0;">[$group:name]</h3>
+          <ul class="plain playlist h4">
+            <!-- iterate group:items -->
+            <li><a href="[$item:permalink]">[$item:title]</a></li>
+          </ul>
         </div>
       </nav>
       
-      
-      
       <!-- replace sponsors -->
-      
-      <form method="GET" class="spot">
-        <h5 class="brown caps-lock strong">[$item:origin:title by year]</h5>
-        <select onchange="navigateToPage.call({href: this.value}, event);">
-          <option>Select Year</option>
-          <!-- iterate item:origin:competitions -->
-          <option value="[/competition/$edition:@key]">[$edition:year]</option>
-        </select>
-      </form>
-      
     </section>
   </article>
+  
 </article>

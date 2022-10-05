@@ -57,7 +57,9 @@ abstract class Vertex extends \bloc\Model
   public function getTitle(\DOMNode $context)
   {
     $parsedown = new \vendor\Parsedown;
-    return strip_tags($parsedown->text(trim($context->getAttribute('title'))) , '<em><strong>');
+
+    $text =  strip_tags($parsedown->text(trim($context->getAttribute('title'))) , '<span><em><strong>');
+    return preg_replace('/\[([^\]]+)\](\s?)/', '<span class="ins">$1$2</span>', $text);
   }
 
   public function setUpdatedAttribute(\DOMElement $context)
@@ -260,12 +262,16 @@ abstract class Vertex extends \bloc\Model
     return $this->template[$name] ?: $this->get_model();
   }
 
-  protected function getContent($context)
+  protected function getContent(\DOMElement $context)
   {
     $dict = [];
 
     foreach ($this->getAbstract($context, false) as $abstract) {
+      $lines = explode("\n", $abstract['text']);
       $dict[$abstract['type']] = $abstract['text'];
+      unset($lines[0]);
+      $dict[$abstract['type'].'_chop'] = join("\n", $lines);
+      
     }
     return new \bloc\types\Dictionary($dict);
   }
@@ -326,13 +332,14 @@ abstract class Vertex extends \bloc\Model
 
   public function getPermalink(\DOMElement $context)
   {
-    return "/{$this->_model}/{$context['@key']}";
+    $type = $context->parentNode['@type'];
+    return "/{$type}/{$context['@key']}";
   }
   
   public function setKeyAttribute(\DOMElement $context, $value, $unique = '')
   {
     setlocale(LC_ALL, "en_US.utf8");
-    $title = iconv('UTF-8', 'ASCII//TRANSLIT', $this->title);
+    $title = strip_tags(iconv('UTF-8', 'ASCII//TRANSLIT', $this->title));
     $find = [
       '/^[^a-z]*behind\W+the\W+scenes[^a-z]*with(.*)/i' => '$1-bts',
       '/(re:?sound\s+#\s*[0-9]{1,4}:?\s*|best\s+of\s+the\s+best:\s*)/i' => '',
@@ -345,4 +352,22 @@ abstract class Vertex extends \bloc\Model
     $context->setAttribute('key', $key);
 
   }
+  
+  
+  public function getTOC(\DOMElement $context) 
+  {
+    $text  = $this->content->current();
+    $elem  = \bloc\dom\document::ELEM("<div>{$text}</div>");
+    $xpath = new \DOMxpath($elem->ownerDocument);
+    $out = [];
+    foreach($xpath->query('//h2[@id]') as $section) {
+      $out[] = [
+        'text' => $section->nodeValue,
+        'link' => '#' . $section->getAttribute('id'),
+      ];
+    }
+    
+    return $out;
+  }
+  
 }

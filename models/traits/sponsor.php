@@ -16,7 +16,7 @@ trait sponsor {
     foreach ($sponsors as $edge) {
       $key = trim((string)$edge ?: $type);
       if (! array_key_exists($key, $output)) {
-        $output[$key] = ['group' => ['name' => $key, 'items' => []]];
+        $output[$key] = ['group' => ['id' => strtolower(trim(preg_replace('/[_\W]+/', '-', $key), '- ')), 'name' => $key, 'items' => []]];
       }
 
       $output[$key]['group']['items'][] = ['item' => \models\Graph::FACTORY(\models\Graph::ID($edge['@vertex']))];

@@ -513,9 +513,15 @@ if (window.history.pushState) {
       if (evt.target.hash && (window.location.pathname == evt.target.pathname)) {
         evt.preventDefault();
         var elem = document.querySelector(evt.target.hash);
-        
+
+
         if (elem) {
-          window.Adjust.scroll(+elem.offsetTop, 500);
+          document.querySelector('.target')?.classList.remove('target');
+          elem.classList.add('target');
+          if (!elem.closest('nav.jump')) {
+              window.Adjust.scroll(-50+elem.offsetTop, 500);
+          }
+          
         }
       } else if (evt.target.matches("a:not(.button)[href^='/']")) {
         evt.preventDefault();

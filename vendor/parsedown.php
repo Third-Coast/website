@@ -239,9 +239,9 @@ class Parsedown
             {
                 $CurrentBlock['element']['text'] .= "\n".$text;
             }
-            else
+            else 
             {
-                $Elements []= $CurrentBlock['element'];
+                $Elements[] = $CurrentBlock['element'] ?? '';
 
                 $CurrentBlock = $this->buildParagraph($Line);
 
@@ -284,14 +284,17 @@ class Parsedown
             {
                 $level ++;
             }
+            
 
+            echo "The result of the substitution is ".$result;
             $text = trim($Line['text'], '# ');
-
+            
             $Block = array(
                 'element' => array(
-                    'name' => 'h' . min(6, $level),
-                    'text' => $text,
-                    'handler' => 'line',
+                    'name'       => 'h' . min(6, $level),
+                    'text'       => preg_replace('/\[([^\]]+)\](\s?)/', '<span class="ins">$1$2</span>', $text),
+                    'attributes' =>  ['id' => strtolower(trim(preg_replace('/[_\W]+/', '-', $text), '- '))],
+                    'handler'    => 'line',
                 ),
             );
 

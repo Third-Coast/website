@@ -15,7 +15,7 @@ class Article extends Vertex
     'producer' => ['person'],
     'extra'    => ['feature', 'broadcast'],
     'item'     => ['competition'],
-    'page'     => ['collection', 'competition', 'happening'],
+    'page'     => ['competition', 'collection', 'happening'],
   ];
 
   public function __construct($id = null, $data =[])
@@ -33,6 +33,14 @@ class Article extends Vertex
   {
     return $context->find("edge[@type='extra']")->map(function($extra) {
       return ['feature' => new Feature($extra['@vertex'])];
+    });
+  }
+  
+  public function getPages(\DOMElement $context)
+  {
+    $pages = $context->find("edge[@type='page']");
+    return $pages->count() == 0 ? [] : $pages->map(function($extra) {
+      return ['page' => new Article($extra['@vertex'])];
     });
   }
 
@@ -72,13 +80,12 @@ class Article extends Vertex
     $content['description'] = $document->saveXML($object);
     return $content;
   }
-  
+
   public function getSections(\DOMElement $context) 
   {
     // 'sectionize' text on h2 elements.
     $object    = \bloc\dom\document::ELEM("<div>{$this->content->description}</div>");
     $current   = $object->firstChild->firstChild;
-
     $out = [];
     while ($current) {
       if ($current->nodeName == 'h2') {

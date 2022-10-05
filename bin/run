@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!/usr/local/Cellar/php@7.4/7.4.30/bin/php
 <?php
 
 namespace bloc;

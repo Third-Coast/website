@@ -37,7 +37,11 @@ namespace models;
     public function __construct($id = null, $data =[])
     {
       $this->template['form'] = 'vertex';
+      
       parent::__construct($id, $data);
+      
+      $this->template['digest'] = $this->articles->count() > 0 ? 'collection/award' : 'collection/playlist';
+
     }
 
 
@@ -50,6 +54,14 @@ namespace models;
           $out['caption'] = strip_tags($markdown->text($edge), '<em><strong>');
         }
         return $out;
+      });
+    }
+    
+    public function getPages(\DOMElement $context)
+    {
+      $pages = $context->find("edge[@type='page']");
+      return $pages->count() == 0 ? [] : $pages->map(function($extra) {
+        return ['page' => new Article($extra['@vertex'])];
       });
     }
 
@@ -91,5 +103,29 @@ namespace models;
 
       $out['duration'] = round($out['duration'] / 60, 1);
       return new \bloc\types\Dictionary($out);
+    }
+    
+    public function getContent(\DOMElement $context)
+    {
+      $content = parent::getContent($context);
+      $object    = \bloc\dom\document::ELEM("<div>{$content['about']}</div>");
+      // turn H6 elements into disclosure widgets
+      $document = $object->ownerDocument;
+      foreach ($document->getElementsByTagName('h6') as $mark) {
+        //
+        $details = $document->createElement('details');
+        $mark = $mark->parentNode->replaceChild($details, $mark);
+        $summary = $details->appendChild(new \DOMElement('summary'));
+        $summary->appendChild($mark);
+        $sibling = $details->nextSibling;
+        while($sibling && $sibling->nodeName[0] != 'h') {
+          $next = $sibling->nextSibling;
+          $details->appendChild($sibling);
+          $sibling = $next;
+        }
+      }
+    
+      $content['about'] = $document->saveXML($object);
+      return $content;
     }
   }

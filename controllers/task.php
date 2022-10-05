@@ -79,6 +79,8 @@ class Task extends \bloc\controller
       }
     }
   }
+  
+  
 
   public function CLIcompress($file)
   {
@@ -354,6 +356,37 @@ class Task extends \bloc\controller
       echo $image->write() . "\n";
     }
     \models\Graph::instance()->storage->save(PATH . \models\Graph::DB . '.xml');
+  }
+  
+  public function CLIplaylists() {
+    $collection = \models\Graph::group('collection')->find('.')->current();
+    foreach(['Bwh', 'BwW', 'Bwi', 'Bwj', 'Bwk', 'Bwb', 'Bwm', 'Bwn', 'Bxh'] as $id) {
+      
+      $v = \models\Graph::ID($id);
+      $v->setAttribute('text', 'about');
+      rename(PATH .'data/text/description/' . $id . '.html', PATH .'data/text/about/' . $id . '.html');
+      foreach($v->find('edge[@type="extra"]') as $edge) {
+        // find joined vertex and switch edge type to playlist
+        $ref = \models\Graph::ID($edge['@vertex']);
+        $edge->setAttribute('type', 'item');
+        $redge = $ref->find("edge[@vertex='{$id}']")->pick();
+        $redge->setAttribute('type', 'item');
+        echo $ref->write() . "\n";
+      }
+      
+      
+      echo "\n\n\n" . $v->write() . "\n";
+      
+      $collection->appendChild($v);
+      
+    }
+    
+    \models\Graph::instance()->storage->save(PATH . \models\Graph::DB . '.xml');
+    // $articles = \models\Graph::group('article')->find('vertex');
+//
+//     foreach($articles as $article) {
+//       echo $article['@title'] . "\n";
+//     }
   }
 
   protected function CLIduration($user, $count = 10)
