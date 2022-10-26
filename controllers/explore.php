@@ -67,8 +67,8 @@ class Explore extends Manage
     $view = new view('views/layout.html');
     $digest = ($this->item->_model == 'competition') ? '' : '/digests';
     $view->content = "views{$digest}/{$this->item->template('digest')}.html";
-    
-    if ($this->item->pages) {
+
+    if ($this->item->links) {
       $view->links = 'views/partials/links.html';
     }
     

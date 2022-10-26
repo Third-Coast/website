@@ -60,8 +60,9 @@ namespace models;
     public function getPages(\DOMElement $context)
     {
       $pages = $context->find("edge[@type='page']");
-      return $pages->count() == 0 ? [] : $pages->map(function($extra) {
-        return ['page' => new Article($extra['@vertex'])];
+      
+      return $pages->count() == 0 ? [] : $pages->map(function($p) {
+        return ['page' => new Article($p['@vertex'])];
       });
     }
 

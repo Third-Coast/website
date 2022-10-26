@@ -43,7 +43,7 @@ class Article extends Vertex
       return ['page' => new Article($extra['@vertex'])];
     });
   }
-
+  
   public function getSuffix(\DOMElement $context)
   {
     // return substr(strip_tags($this->title), 18);

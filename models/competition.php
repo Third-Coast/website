@@ -120,12 +120,5 @@ namespace models;
       });
     }
     
-    
-    
-
-    public function getPages(\DOMElement $context) {
-      $pages = $this->groupByTitle($context, 'page');
-      return $pages;
-    }
 
   }

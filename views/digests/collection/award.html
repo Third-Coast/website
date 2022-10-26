@@ -1,14 +1,35 @@
 <article class="feature collection page">
+  <style type="text/css">
+    aside hr {
+      border-width: 1px;
+      margin: 0;
+      border-color: #000;
+
+    }
+
+    aside.topic {
+      background-color: #d69c8a;
+      margin: 0 0 2em;
+      padding: 1.5em;
+    }
+  </style>
   <div class="wrap panel">
     <div class="two-thirds rr tt">
-      <h1 class="display lead strong two-thirds" data-id="[$item:@id]">[$item:title]</h1>
-      <section class="markdown">[$item:content:about]</section>
+      <header style="margin: 0 0 2.5em;background-color:#003366;padding: 4em;color: #fff;">
+        <h1 class="display lead strong" data-id="[$item:@id]">[$item:title]</h1>
+        <p style="font-size:200%;line-height:1.5;">[$item:summary]</p>
+      </header>
+      
+      <section class="markdown">[$item:content:about_chop]</section>
     </div>
     <aside class="one-third ll">
-      <div class="markdown">
-        <aside class="extra">[$item:content:extras]</aside>
-      </div>
       <!-- replace TOC -->
+      
+      <div class="markdown">
+        <aside class="sidebar topic">[$item:content:extras]</aside>
+        <!-- iterate item:pages -->
+        <aside class="sidebar aux">[$page:content:extras]</aside>
+      </div>
       <!-- replace links -->
     </aside>
   </div>
@@ -28,4 +49,10 @@
       </header>
     </article>
   </section>
+  <style type="text/css">
+    blockquote {
+      border: 1px solid #000;
+      padding: 1.5em 2em;
+    }
+  </style>
 </article>

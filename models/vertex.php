@@ -271,8 +271,12 @@ abstract class Vertex extends \bloc\Model
       $dict[$abstract['type']] = $abstract['text'];
       unset($lines[0]);
       $dict[$abstract['type'].'_chop'] = join("\n", $lines);
-      
     }
+    
+    if (!isset($dict['extras'])) {
+      $dict['extras'] = null;
+    }
+    
     return new \bloc\types\Dictionary($dict);
   }
 
@@ -368,6 +372,31 @@ abstract class Vertex extends \bloc\Model
     }
     
     return $out;
+  }
+  
+  
+  protected function groupByTitle(\DOMElement $context, string $type)
+  {
+    $output = [];
+    $sponsors = $context->find("edge[@type='{$type}']");
+    if ($sponsors->count() < 1) return null;
+
+    foreach ($sponsors as $edge) {
+      $key = trim((string)$edge ?: "Related Pages");
+      if (! array_key_exists($key, $output)) {
+        $output[$key] = ['group' => ['id' => strtolower(trim(preg_replace('/[_\W]+/', '-', $key), '- ')), 'name' => $key, 'items' => []]];
+      }
+
+      $output[$key]['group']['items'][] = ['item' => \models\Graph::FACTORY(\models\Graph::ID($edge['@vertex']))];
+    }
+    $output = array_values($output);
+    return new \bloc\types\Dictionary($output);
+
+  }
+  
+  public function getLinks(\DOMElement $context) {
+    $pages = $this->groupByTitle($context, 'page');
+    return $pages ?: [];
   }
   
 }
