@@ -4,7 +4,7 @@
   --aqua-bg: #46817c;
   --condensed: 'Source Sans Pro', 'Avenir Next Condensed';
   --display: dapifer, 'Source Serif Pro', Baskerville,  Didot, 'Times New Roman';
-/*  --marker: neue-haas-grotesk-display;*/
+  --marker: neue-haas-grotesk-display;
 }
 
 
@@ -231,8 +231,8 @@ header > img.landscape {
   position: relative;
 }
 .path {flex-wrap:wrap;justify-content: flex-start;}
-.markdown h2 {font-family: 'IBM Plex Sans Condensed'; font-weight: 400;line-height: 1;}
-.display, aside > p > strong:only-of-type {font-family: var(--display);font-weight: 600; line-height: 1;}
+.markdown h2 {font-family: var(--marker); font-weight: 300;line-height: 1;}
+.display, aside > p > strong:only-of-type {font-family: var(--marker);font-weight: 600; line-height: 1;}
 
 .panel, .triptych {display:flex;}
 .sink {flex: 1 0 10vw;}
@@ -368,7 +368,9 @@ aside.extra {
   text-decoration:none;
   color:#fff;
   text-transform:uppercase;
-  background-color: var(--aqua-bg);
+  background-image: linear-gradient(30deg, #3b6d7c, var(--aqua-bg), #3b6d7c), url(/images/texture.jpg);
+  border-radius: 0.25em;
+  background-blend-mode: multiply;
   line-height:1;
 }
 
@@ -391,6 +393,8 @@ nav.jump {
   margin: 4em 0 0;
   padding-bottom: 1em;
   box-shadow: 0 -1em 1em #ffffff;
+  background-image: linear-gradient(#fff 80%, rgb(255 255 255 / 80%));
+  background-color: transparent;
 }
 
 .image-tab {

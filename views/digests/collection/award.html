@@ -1,4 +1,4 @@
-<article class="feature collection page">
+<article class="category page">
   <style type="text/css">
     aside hr {
       border-width: 1px;
@@ -8,15 +8,28 @@
     }
 
     aside.topic {
-      background-color: #d69c8a;
+      background-image: linear-gradient(135deg, #f99faa, #fdd1b2), url(/images/texture.jpg);
+      background-blend-mode: multiply;
       margin: 0 0 2em;
       padding: 1.5em;
+      text-shadow: 1px 1px 1px rgb(255 255 255 / 30%);
+      border-radius: 0.25em;
+    }
+    
+    .category header.gradient {
+            border-radius: 0.25em;
+      margin: 0 0 2.5em;
+      background-color:#fff;
+      padding: 4em;
+      color: #fff;
+      background-image: linear-gradient(#4e4f8b, #356291), url(/images/texture.jpg);
+      background-blend-mode: multiply;
     }
   </style>
   <div class="wrap panel">
     <div class="two-thirds rr tt">
-      <header style="margin: 0 0 2.5em;background-color:#003366;padding: 4em;color: #fff;">
-        <h1 class="display lead strong" data-id="[$item:@id]">[$item:title]</h1>
+      <header class="gradient">
+        <h1 class="display lead strong" data-id="[$item:@id]" style="text-shadow: 0 -2px 0 rgb(0 0 0 / 20%);">[$item:title]</h1>
         <p style="font-size:200%;line-height:1.5;">[$item:summary]</p>
       </header>
       
@@ -55,4 +68,5 @@
       padding: 1.5em 2em;
     }
   </style>
+  
 </article>
