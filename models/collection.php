@@ -109,7 +109,7 @@ namespace models;
     public function getContent(\DOMElement $context)
     {
       $content = parent::getContent($context);
-      $object    = \bloc\dom\document::ELEM("<div>{$content['about']}</div>");
+      $object    = \bloc\dom\document::ELEM("<div>{$content['about_chop']}</div>");
       // turn H6 elements into disclosure widgets
       $document = $object->ownerDocument;
       foreach ($document->getElementsByTagName('h6') as $mark) {
@@ -126,7 +126,7 @@ namespace models;
         }
       }
     
-      $content['about'] = $document->saveXML($object);
+      $content['about_chop'] = $document->saveXML($object);
       return $content;
     }
   }
