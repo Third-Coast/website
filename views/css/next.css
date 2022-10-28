@@ -1058,8 +1058,8 @@ button.error { background-color: #ED1C24 }
 
 
 .target, :target {
-  background-color: yellow;
-  box-shadow: 0 0 0 0.5em yellow;
+  background-color: #fdd1b2;
+  box-shadow: 0 0 0 0.5em #fdd1b2;
   animation: fade 1.5s ease 3s 1 normal forwards;
 }
 
@@ -1067,8 +1067,8 @@ button.error { background-color: #ED1C24 }
 
 @keyframes fade {
   from {
-    box-shadow: 0 0 0 0.5em yellow;
-    background-color: yellow;
+    box-shadow: 0 0 0 0.5em #fdd1b2;
+    background-color: #fdd1b2;
   }
 
   to {
