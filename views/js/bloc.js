@@ -501,6 +501,8 @@ if (window.history.pushState) {
 
     Content.get(this.href + append);
     ga('send', 'pageview');
+    gtag('config', 'G-972N20D11S');
+    
     document.body.classList.add('transition');
     var style = getComputedStyle(document.body);
     document.body.style.backgroundSize = style.backgroundSize.match(/([0-9\-\.]+)/g).map(adjust).join(', ');

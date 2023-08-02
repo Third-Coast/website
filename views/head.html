@@ -49,9 +49,7 @@
     }(this.bloc = {}, document.createElement('script'), [], [], []));
 
     var mobile = (/mobile|iPhone/i).test(navigator.userAgent),
-      dataLayer = [{
-        'start': Date.now()
-      }],
+      dataLayer = [],
       WebFontConfig = {
         google: {
           families: ['Source+Sans+Pro:400,300,600,700,400italic', 'VT323', 'Source+Serif+Pro', 'IBM+Plex+Sans:300', 'IBM+Plex+Sans+Condensed:200', 'Sedgwick+Ave', 'Alfa+Slab+One']
@@ -64,11 +62,21 @@
 
     // Lastly, fonts and analytics
     bloc.require('//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js', true);
-    bloc.require('//www.google-analytics.com/analytics.js', true);
+    // bloc.require('//www.google-analytics.com/analytics.js', true);
+    bloc.require('//www.googletagmanager.com/gtag/js?id=G-972N20D11S', true);
 
+    var gtag = function() {
+      window.dataLayer.push(arguments);
+      console.log(arguments);
+    };
+
+    gtag('js', new Date());
+    gtag('config', 'G-972N20D11S');
+
+    // NOTE: Analytics is disabled and gtag is employed. leaving in ga func so all events do not need to be rewritten
     window.GoogleAnalyticsObject = 'ga';
     window.ga = function() {
-      (window.ga.q = window.ga.q || []).push(arguments);
+     (window.ga.q = window.ga.q || []).push(arguments);
     };
     window.ga.l = Date.now();
 
