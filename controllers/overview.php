@@ -268,7 +268,9 @@ function calendar($start, $category, $query)
       $view = new view('views/layout.html');
       $group = Graph::group('competition');
       
-      if ($id === null) {
+    
+
+      if ($id === null || $id == 'latest') {
         $this->banner = 'Competitions';
         
 
@@ -276,6 +278,12 @@ function calendar($start, $category, $query)
           ['item' => new \models\competition($group->pick('vertex[@sticky="driehaus"]'))],
           ['item' => new \models\competition($group->pick('vertex[@sticky="shortdocs"]'))],
         ];
+
+        if ($id == 'latest') {
+          foreach($this->competitions[0]['item']->competitions as $c) {
+            \bloc\router::redirect($c['edition']->permalink);
+          }
+        }
 
         $view->content = "views/competition/overview.html";
       } else {
