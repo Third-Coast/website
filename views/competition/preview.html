@@ -9,8 +9,10 @@
   
   <header id="overview">
     <div class="[banner $item:@sticky banner-bg]" data-aspect="[$item:banner:mark]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
-      <h1 class="lead tracked display strong t" data-id="[$item:@id]">[$item:title]</h1>
-      <p>[$item:summary]</p>
+      <div style="text-indent:-1000%">
+        <h1 class="lead tracked display strong t" data-id="[$item:@id]">[$item:title]</h1>
+        <p>[$item:summary]</p>
+      </div>
     </div>
   </header>
   <article class="panel">
@@ -20,7 +22,7 @@
     </div>
     <section class="one-third ll">
       
-      <img data-src="[//s3.amazonaws.com/$item:square:url]" alt="[$item:@title banner]" style="max-width:100%;"/>
+      <!-- <img data-src="[//s3.amazonaws.com/$item:square:url]" alt="[$item:@title banner]" style="max-width:100%;"/> -->
       
       <div class="markdown">
         <aside class="extra sidebar topic">[$item:content:extras]</aside>

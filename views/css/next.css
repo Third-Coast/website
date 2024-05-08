@@ -339,6 +339,7 @@ header nav[role] > ul li.special a {
   padding: 1em 2.5em;
   margin: 0;
   width: 8em;
+  background-color: transparent;
 }
 
 
@@ -1108,14 +1109,28 @@ aside hr {
 }
 
 aside.topic {
-  background-image: linear-gradient(135deg, #f99faa, #fdd1b2), url(/images/texture.jpg);
-  background-blend-mode: multiply;
+  /* background-image: linear-gradient(135deg, #f99faa, #fdd1b2), url(/images/texture.jpg); */
+  /* background-blend-mode: multiply; */
+  background-image: url(/images/yellow-background.jpg);
+  background-size: cover;
   margin: 0 0 2em;
   padding: 1.5em;
   text-shadow: 1px 1px 1px rgb(255 255 255 / 30%);
   border-radius: 0.25em;
 }
 
+.topic p:first-child a:only-child {
+  display: block;
+  margin: -2em -1.25em 0;
+}
+
+
+
+.topic p a:only-child img {
+  width: 100%;
+  background-color: #fff;
+  display: block;
+}
 .category header.gradient {
   border-radius: 0.25em;
   margin: 0 0 2.5em;
