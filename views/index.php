@@ -47,7 +47,7 @@ $app->prepare('http-request', function ($app, $params) {
   if (getenv('MODE') === 'local' && count($app->log()) > 0) {
     $app->execute('debug', $response);
   }
-
+  error_log(print_r($response, TRUE)); 
   echo trim($response);
 });
 
