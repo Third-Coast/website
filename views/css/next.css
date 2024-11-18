@@ -1121,7 +1121,7 @@ aside.topic {
 
 .topic p:first-child a:only-child {
   display: block;
-  margin: -2em -1.25em 0;
+  /* margin: -2em -1.25em 0; */
 }
 
 
