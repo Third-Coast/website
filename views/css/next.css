@@ -351,7 +351,7 @@ nav[role] > ul {
   align-items: center;
   flex-grow: 1;
   padding: 1px;
-  max-width: 55em;
+  max-width: 70em;
 }
 
 nav[role] > ul > li {
