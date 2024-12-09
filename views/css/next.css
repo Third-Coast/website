@@ -346,12 +346,12 @@ header nav[role] > ul li.special a {
 
 
 nav[role] > ul {
-  flex-wrap:wrap;
+  flex-wrap: nowrap;
   justify-content: space-around;
   align-items: center;
   flex-grow: 1;
   padding: 1px;
-  max-width: 70em;
+  max-width: 80em;
 }
 
 nav[role] > ul > li {
