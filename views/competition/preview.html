@@ -14,7 +14,7 @@
   <header id="overview">
     <div class="[banner $item:@sticky banner-bg]" data-aspect="[$item:banner:mark]" style="[background-image:url(//s3.amazonaws.com/$item:banner:url)]">
       
-      <h1 class="invisible lead tracked display strong t" data-id="[$item:@id]">[$item:title]</h1>
+      <h1 id="title" class="invisible lead tracked display strong t" data-id="[$item:@id]">[$item:title]</h1>
       <p class="invisible">[$item:summary]</p>
       
     </div>
@@ -30,11 +30,29 @@
       
       <div class="markdown">
         <aside class="extra sidebar topic">[$item:content:extras]</aside>
+
+        
+      </div>
+      <div id="enter-button">
+
       </div>
       <!-- insert views/partials/TOC.html -->
       <!-- insert views/partials/links.html -->    
       <!-- replace sponsors -->
+    
     </section>
+    <script type="text/javascript" async="true">
+      // <![CDATA[
+        bloc.init(() => {
+         let title = document.getElementById("title").innerText;
+         title = title.trim();
+         let titles = ["2024-third-coast-call-for-entries-amp-competition","2024 Third Coast Call for Entries & Competition", "Competition Categories", "Third Coast International Audio Festival","Competition Landing Page","Best Documentary","Best Documentary (Non-English Language)","Best Documentary: Short","Audio Unbound","Best New Artist","Best News Feature","Impact","Best Serialized Story","Directors’ Choice","Entry Guide","Collective Pricing Model","History of the Third Coast Competition","Who We Are","Third Coast Competition Frequently Asked Questions","Entry Rates Breakdown","2024-25 Offerings"]
+         if(titles.includes(title)) {
+          document.getElementById('enter-button').innerHTML = '<a href="https://2425thirdcoastcompetition.paperform.co/"><img src="https://i.imgur.com/AmD7rwM.png"/></a>';
+         }
+        });
+      // ]]>
+    </script>
   </article>
   
 </article>
