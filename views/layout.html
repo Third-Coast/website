@@ -113,9 +113,11 @@
       .seven > li {
         margin: 0.5em;
         background-color: #fff;
-        flex: 2 0 calc(25% - 1em);
-        min-width: 20em;
+        /* flex: 1 1 50%; */
         padding:1.5em;
+      }
+      .seven > li + li {
+        min-width: 60%;
       }
       @media (max-width: 40em) {
         .seven {
